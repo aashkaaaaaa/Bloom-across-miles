@@ -1,0 +1,24 @@
+/* Base: reset, typography helpers, shared buttons, inputs, toast */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fdf8f3;color:#5c4b49;overflow-x:hidden;user-select:none;-webkit-user-select:none;}
+.font-serif{font-family:'Playfair Display',serif;}
+.font-hand{font-family:'Caveat',cursive;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:#fdf6f4;}::-webkit-scrollbar-thumb{background:#e5c9c6;border-radius:9999px;}
+input[type=checkbox]{accent-color:#e58c94;}input[type=range]{accent-color:#e58c94;}
+
+/* ── Button styles ── */
+.btn-primary{background:linear-gradient(135deg,#f29ca3,#e68594);color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;padding:12px 24px;cursor:pointer;transition:opacity .15s,transform .15s;box-shadow:0 4px 20px rgba(242,156,163,.4);}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-secondary{background:white;color:#5c4b49;border:1.5px solid #f2e5e2;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 20px;cursor:pointer;transition:border-color .15s;}
+.btn-secondary:hover{border-color:#f29ca3;}
+.btn-bouquet{background:linear-gradient(135deg,#c8a0d8,#f29ca3);color:white;border:none;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 32px;cursor:pointer;box-shadow:0 8px 30px rgba(200,160,216,.4);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px;}
+.btn-bouquet:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,160,216,.5);}
+
+/* ── Input styles ── */
+.inp{width:100%;padding:10px 14px;border:1.5px solid #f2e5e2;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;background:white;color:#5c4b49;outline:none;transition:border-color .15s;}
+.inp:focus{border-color:#f29ca3;}
+.inp::placeholder{color:#c0a8a8;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;z-index:100;background:#5c4b49;color:white;padding:12px 18px;border-radius:16px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;}
+#toast.show{transform:translateY(0);opacity:1;}

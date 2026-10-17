@@ -1,0 +1,31 @@
+/* Landing page: hero, feature cards, version badges, floating petals */
+/* ── LANDING PAGE ── */
+@keyframes floatUp{0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes floatBob{0%,100%{transform:translateY(0px) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
+@keyframes shimmer{0%,100%{opacity:.5;}50%{opacity:1;}}
+@keyframes petalDrift{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}10%{opacity:.7;}90%{opacity:.7;}100%{transform:translateY(-100vh) translateX(40px) rotate(360deg);opacity:0;}}
+.land-fade{animation:floatUp .7s cubic-bezier(.22,1,.36,1) both;}
+.land-fade-1{animation-delay:.05s;}
+.land-fade-2{animation-delay:.15s;}
+.land-fade-3{animation-delay:.28s;}
+.land-fade-4{animation-delay:.42s;}
+.land-fade-5{animation-delay:.56s;}
+.float-bob{animation:floatBob 4s ease-in-out infinite;}
+.feature-card{background:rgba(255,255,255,.75);backdrop-filter:blur(8px);border:1.5px solid rgba(242,229,226,.8);border-radius:20px;padding:22px 20px;transition:transform .2s,box-shadow .2s;}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(242,156,163,.18);}
+.version-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.8);border:1px solid #fad6d9;border-radius:99px;padding:5px 14px;font-size:11px;font-weight:600;color:#d4747d;}
+.v2-badge{background:rgba(232,218,250,.6);border:1px solid #d4b8f0;color:#8b5cf6;}
+.bg-petal{position:absolute;pointer-events:none;animation:petalDrift linear infinite;}
+
+
+/* Mobile hero: stack the columns and reuse the full bouquet, scaled down */
+@media(max-width:680px){
+  #hero-split{grid-template-columns:1fr!important;padding:20px 20px 8px!important;text-align:center!important;}
+  #hero-split>div:first-child{align-items:center!important;padding-right:0!important;text-align:center!important;}
+  #hero-split>div:first-child>div:nth-last-child(-n+2){justify-content:center;}
+  #screen-landing>nav{padding:14px 16px!important;}
+  #screen-landing>nav .version-badge{display:none;}
+  #hero-split>div:last-child{margin-top:36px;}
+  #hero-split>div:last-child svg{width:240px!important;height:auto!important;}
+  #hero-split>div:last-child div[style*="320px"]{width:260px!important;height:260px!important;}
+}

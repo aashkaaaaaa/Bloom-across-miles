@@ -1,0 +1,99 @@
+/* Recipient experience: envelope, rising letter, love letter modal, confetti */
+/* ── RECIPIENT SCREEN ── */
+#recipient-bg{position:fixed;inset:0;background:linear-gradient(135deg,#fff0f4 0%,#f4f0ff 50%,#f0fff4 100%);z-index:0;}
+
+/* ── CONFETTI ── */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:10;}
+
+/* ── ENVELOPE ── */
+#envelope-wrap{position:relative;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.env-container{position:relative;width:320px;height:240px;cursor:pointer;perspective:900px;}
+/* envelope body */
+.env-body{position:absolute;inset:0;background:#f9b8c4;border-radius:4px 4px 16px 16px;box-shadow:0 12px 40px rgba(249,156,163,.35);}
+/* back flap - the triangle pointing up, behind letter */
+.env-back-flap{position:absolute;top:0;left:0;right:0;height:0;border-left:160px solid transparent;border-right:160px solid transparent;border-top:140px solid #f4a0b0;z-index:1;}
+/* left and right inner triangles */
+.env-left{position:absolute;bottom:0;left:0;width:0;height:0;border-bottom:120px solid #f4a0b0;border-right:160px solid transparent;z-index:2;}
+.env-right{position:absolute;bottom:0;right:0;width:0;height:0;border-bottom:120px solid #f0a8b8;border-left:160px solid transparent;z-index:2;}
+/* bottom triangle */
+.env-bottom{position:absolute;bottom:0;left:0;right:0;height:0;border-left:160px solid transparent;border-right:160px solid transparent;border-bottom:110px solid #f9b8c4;z-index:3;}
+
+/* front flap - opens upward via CSS transform */
+.env-front-flap{
+  position:absolute;top:0;left:0;right:0;height:0;
+  border-left:160px solid transparent;border-right:160px solid transparent;border-top:140px solid #f9b8c4;
+  z-index:8;
+  transform-origin:top center;
+  transform:rotateX(0deg);
+  transition:transform 1.2s cubic-bezier(.4,0,.2,1);
+}
+.env-front-flap.open{transform:rotateX(-180deg);}
+
+/* letter card - slides up from envelope */
+.letter-card{
+  position:absolute;left:50%;bottom:20px;
+  transform:translateX(-50%) translateY(0px);
+  width:220px;z-index:6;
+  transition:transform 1.4s cubic-bezier(.22,1,.36,1) .6s, opacity .6s ease .6s;
+  opacity:0;
+}
+.letter-card.risen{transform:translateX(-50%) translateY(-200px);opacity:1;}
+.letter-paper{
+  background:#fffdf9;border-radius:8px;padding:20px 18px 24px;
+  box-shadow:0 8px 32px rgba(92,75,73,.18);
+  border:1px solid #f2e5e2;position:relative;
+}
+/* lined paper lines */
+.letter-paper::before{
+  content:'';position:absolute;inset:52px 18px 18px;
+  background:repeating-linear-gradient(to bottom,transparent,transparent 22px,#f0e8e6 22px,#f0e8e6 23px);
+  pointer-events:none;
+}
+.letter-wax{width:40px;height:40px;margin:0 auto 12px;position:relative;z-index:1;}
+
+/* ── LOVE LETTER MODAL ── */
+#letter-modal{
+  display:none;position:fixed;inset:0;z-index:50;
+  align-items:center;justify-content:center;
+  background:rgba(255,240,244,.92);backdrop-filter:blur(12px);
+  padding:20px;
+}
+#letter-modal.open{display:flex;}
+.letter-modal-card{
+  background:#fffdf9;border-radius:24px;max-width:520px;width:100%;
+  box-shadow:0 24px 80px rgba(92,75,73,.18);border:2px solid #f2e5e2;
+  padding:40px 36px 36px;position:relative;max-height:90vh;overflow-y:auto;
+  animation:riseUp .6s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes riseUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+/* lined paper inside modal */
+.modal-lines{
+  background:repeating-linear-gradient(to bottom,transparent,transparent 30px,#f0e8e6 30px,#f0e8e6 31px);
+  padding:12px 0 4px;min-height:140px;
+}
+
+/* ── Confetti pieces ── */
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1;}
+  80%{opacity:1;}
+  100%{transform:translateY(110vh) rotate(720deg) scale(.8);opacity:0;}
+}
+@keyframes confettiWiggle{
+  0%,100%{margin-left:0px;}
+  25%{margin-left:18px;}
+  75%{margin-left:-18px;}
+}
+.confetti-piece{
+  position:fixed;top:-20px;pointer-events:none;z-index:11;
+  animation:confettiFall linear infinite, confettiWiggle ease-in-out infinite;
+}
+@keyframes ribbonWiggle{
+  0%,100%{transform:translateY(0) scaleX(1);}
+  50%{transform:translateY(40px) scaleX(-1);}
+}
+.ribbon-piece{position:fixed;top:-30px;pointer-events:none;z-index:11;animation:confettiFall linear infinite;}
+
+/* ── Envelope open animation sequence ── */
+@keyframes envBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.env-bounce{animation:envBounce 2s ease-in-out infinite;}
+.env-bounce.stop{animation:none;}

@@ -1,0 +1,6 @@
+/* Builder canvas: dotted studio background, draggable flowers and transform handles */
+.studio-grid{background-color:#FFFDF9;background-image:radial-gradient(#E8D8D5 1.2px,transparent 1.2px);background-size:22px 22px;}
+.flower-entity{cursor:grab;touch-action:none;}.flower-entity:active{cursor:grabbing;}
+.gizmo-rotate{cursor:grab;touch-action:none;}.gizmo-rotate:active{cursor:grabbing;}
+.gizmo-scale{cursor:nwse-resize;touch-action:none;}.gizmo-move{cursor:move;touch-action:none;}
+.action-btn{cursor:pointer;}.action-btn:hover circle{fill:#fff0f1!important;}
