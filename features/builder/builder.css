@@ -9,6 +9,12 @@
 #mainSvg{touch-action:none;}   /* dragging flowers must not scroll the page */
 .builder-tip-short{display:none;}
 
+/* Sidebar resize handle */
+#panelResizer{width:8px;margin-left:-4px;margin-right:-4px;flex-shrink:0;cursor:col-resize;position:relative;z-index:5;touch-action:none;}
+#panelResizer::after{content:'';position:absolute;top:0;bottom:0;left:3px;width:2px;background:transparent;transition:background .15s;}
+#panelResizer:hover::after,#panelResizer:focus-visible::after,#panelResizer.dragging::after{background:#f29ca3;}
+#panelResizer:focus{outline:none;}
+
 /* ── Phones and small tablets: canvas on top, tools underneath ── */
 @media(max-width:760px){
   #builderHeader{padding:10px 12px!important;}
@@ -19,6 +25,7 @@
   #builderLayout{flex-direction:column;overflow:visible!important;}
   #stage{order:-1;min-height:0!important;padding:12px 10px!important;}
   #stage .canvas-box{max-height:58vh!important;max-width:420px!important;}
+  #panelResizer{display:none;}
   #builderPanel{width:100%!important;max-height:none!important;border-right:none!important;border-top:1px solid #f2e5e2;}
   #builderPanel [id^="tb-"]{font-size:13px!important;padding:10px 4px!important;}
   #flowerGrid{grid-template-columns:repeat(auto-fill,minmax(86px,1fr))!important;}

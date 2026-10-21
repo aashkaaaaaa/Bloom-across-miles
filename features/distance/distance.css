@@ -1,0 +1,29 @@
+/* Distance calculator inside the Note tab. Every rule is scoped to #distanceCalc. */
+#distanceCalc{margin-top:6px;}
+#distanceCalc .dc-toggle{background:none;border:none;padding:2px 0;font-family:inherit;font-size:10px;font-weight:600;color:#d4747d;cursor:pointer;}
+#distanceCalc .dc-toggle:hover{text-decoration:underline;}
+#distanceCalc .dc-panel{margin-top:8px;padding:10px;border:1px dashed #f0cfd3;border-radius:12px;background:#fff;display:flex;flex-direction:column;gap:10px;}
+#distanceCalc .dc-panel[hidden]{display:none;}
+#distanceCalc label{font-size:10px;font-weight:600;color:#8c7774;display:block;margin-bottom:3px;}
+#distanceCalc .dc-row{display:flex;gap:6px;}
+#distanceCalc .dc-row .inp{font-size:11px;padding:7px 10px;min-width:0;}
+#distanceCalc .dc-find{flex-shrink:0;padding:0 10px;border-radius:9px;border:1.5px solid #f2e5e2;background:#fff9f9;font-family:inherit;font-size:11px;font-weight:600;color:#d4747d;cursor:pointer;}
+#distanceCalc .dc-find:hover{border-color:#f29ca3;}
+#distanceCalc .dc-status{font-size:10px;color:#8c7774;margin-top:4px;line-height:1.4;}
+#distanceCalc .dc-matches{display:flex;flex-direction:column;gap:4px;margin-top:4px;}
+#distanceCalc .dc-matches button{text-align:left;padding:6px 8px;border-radius:8px;border:1px solid #f2e5e2;background:#fffdfb;font-family:inherit;font-size:10px;color:#5c4b49;cursor:pointer;line-height:1.35;}
+#distanceCalc .dc-matches button:hover{border-color:#f29ca3;background:#fff5f6;}
+#distanceCalc .dc-units{display:flex;gap:4px;background:#fcf8f7;border-radius:9px;padding:3px;align-self:flex-start;}
+#distanceCalc .dc-units button{padding:5px 12px;border:none;border-radius:7px;background:transparent;font-family:inherit;font-size:10px;font-weight:600;color:#8c7774;cursor:pointer;}
+#distanceCalc .dc-units button.on{background:#fff;color:#d4747d;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+#distanceCalc .dc-result{font-size:11px;font-weight:600;color:#5d8a4c;}
+#distanceCalc .dc-result:empty{display:none;}
+#distanceCalc .dc-credit{font-size:9px;color:#b59e9b;}
+#distanceCalc .dc-credit a{color:#a8908d;}
+
+@media(max-width:760px){
+  #distanceCalc .dc-toggle{font-size:13px;}
+  #distanceCalc .dc-row .inp{font-size:16px;}   /* 16px stops iPhones zooming in */
+  #distanceCalc .dc-find,#distanceCalc .dc-matches button,#distanceCalc .dc-units button{font-size:13px;padding:8px 12px;}
+  #distanceCalc label,#distanceCalc .dc-status{font-size:12px;}
+}
