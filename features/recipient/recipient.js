@@ -1,8 +1,7 @@
 /* Recipient experience on bouquet.html: envelope, love letter modal, bouquet reveal */
 
 document.addEventListener('DOMContentLoaded',()=>{
-  if(loadFromHash())showRecipient();
-  else showScreen('missing');
+  loadFromHash().then(ok=>{ if(ok)showRecipient(); else showScreen('missing'); });
 });
 
 function openEnvelope(){

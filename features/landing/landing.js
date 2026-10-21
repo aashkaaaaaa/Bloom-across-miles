@@ -10,7 +10,9 @@ function spawnLandingPetals(){
     const d=document.createElement('div');
     d.className='bg-petal';
     d.textContent=emojis[i%emojis.length];
-    d.style.cssText=`left:${Math.random()*100}%;bottom:-40px;font-size:${16+Math.random()*18}px;animation-duration:${10+Math.random()*12}s;animation-delay:${Math.random()*8}s;opacity:.35;`;
+    const dur=12+Math.random()*12;
+    // Negative delay starts each petal part-way through its drift, so some are on screen right away
+    d.style.cssText=`left:${Math.random()*100}%;bottom:-40px;font-size:${16+Math.random()*18}px;animation-duration:${dur}s;animation-delay:${-Math.random()*dur}s;opacity:.55;`;
     c.appendChild(d);
   }
 }

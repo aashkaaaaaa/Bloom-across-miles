@@ -1,27 +1,40 @@
 /* Bouquet link format: the part after # in the link sent to the recipient.
-   Current format is #b=... (v2). Old #bouquet=... links still open. */
+   Newest: #z=... (compressed, about a third shorter). Still opens #b=... and the original #bouquet=... */
 
-/* Compact, URL-safe bouquet payload: flower index instead of id, scale as a whole number, no double encoding */
-function encodeBouquet(){
-  const d={v:2,w:S.wrapper,r:S.ribbon,n:[S.note.show?1:0,S.note.to||'',S.note.from||'',S.note.dist||'',S.note.msg||''],
+function bouquetPayload(){
+  return {v:2,w:S.wrapper,r:S.ribbon,n:[S.note.show?1:0,S.note.to||'',S.note.from||'',S.note.dist||'',S.note.msg||''],
     s:S.stems.map(s=>[FLOWERS.findIndex(f=>f.id===s.id),Math.round(s.x),Math.round(s.y),Math.round(s.r),Math.round(s.sc*100),s.fx?1:0])};
-  const bytes=new TextEncoder().encode(JSON.stringify(d));
-  let bin='';bytes.forEach(b=>{bin+=String.fromCharCode(b);});
-  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function toB64url(bytes){let bin='';bytes.forEach(b=>{bin+=String.fromCharCode(b);});return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function fromB64url(str){let b64=decodeURIComponent(str).replace(/-/g,'+').replace(/_/g,'/');while(b64.length%4)b64+='=';return Uint8Array.from(atob(b64),c=>c.charCodeAt(0));}
+async function pipeBytes(bytes,stream){return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());}
+
+/* Uncompressed form (#b=), kept for browsers without compression support */
+function encodeBouquet(){return toB64url(new TextEncoder().encode(JSON.stringify(bouquetPayload())));}
+
+/* What goes after # in the link: compressed when the browser can, otherwise the plain form */
+async function makeBouquetHash(){
+  const raw=new TextEncoder().encode(JSON.stringify(bouquetPayload()));
+  if(typeof CompressionStream==='function'){
+    try{return 'z='+toB64url(await pipeBytes(raw,new CompressionStream('deflate-raw')));}catch(e){}
+  }
+  return 'b='+toB64url(raw);
 }
 
-/* Reads #bouquet=... into S. Returns true only if a usable bouquet was found. */
-function loadFromHash(){
+/* Reads the link into S. Resolves true only if a usable bouquet was found. */
+async function loadFromHash(){
   const hash=location.hash||'';
-  const isNew=hash.startsWith('#b='), isOld=hash.startsWith('#bouquet=');
+  const isZip=hash.startsWith('#z='), isNew=isZip||hash.startsWith('#b='), isOld=hash.startsWith('#bouquet=');
   if(!isNew&&!isOld)return false;
   try{
     let note,stems;
     if(isNew){
-      let b64=decodeURIComponent(hash.slice(3)).replace(/-/g,'+').replace(/_/g,'/');
-      while(b64.length%4)b64+='=';
-      const bin=atob(b64);
-      const d=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));
+      let bytes=fromB64url(hash.slice(3));
+      if(isZip){
+        if(typeof DecompressionStream!=='function'){toast('This browser is too old to open the bouquet. Try an up-to-date Chrome, Safari or Firefox.',6000);return false;}
+        bytes=await pipeBytes(bytes,new DecompressionStream('deflate-raw'));
+      }
+      const d=JSON.parse(new TextDecoder().decode(bytes));
       const n=Array.isArray(d.n)?d.n:[];
       S.wrapper=d.w||'kraft';S.ribbon=d.r||'rose';
       note={show:n[0]!==0,to:n[1],from:n[2],dist:n[3],msg:n[4]};

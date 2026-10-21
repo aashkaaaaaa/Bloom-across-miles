@@ -5,6 +5,7 @@ function goToSend(){
   const from=(S.note.from||'').trim();
   document.getElementById('senderName').value=(from&&from!=='Yours Always')?from:'';
   showSendPanel('send-form-panel');
+  prepareLink();
   syncMsgPreview();
   showScreen('send');
 }
@@ -48,19 +49,31 @@ async function sendLetter(){
 
   if(EMAILJS_ON){ return sendWithEmailJS(base); }
 
-  // Gmail: open the tab now, while the click still counts, then point it at Gmail once the link is ready
-  // The pink card is copied at the same moment, so the sender only has to press Ctrl+V in Gmail.
-  const tab = window.open('', '_blank');
-  const linkReady = makeBouquetHash().then(h=>`${base}#${h}`);
-  const copying = copyLetterFor(linkReady);
-  bouquetLink = await linkReady;
+  // Everything below runs straight away inside the click (no waiting), so Gmail opens directly
+  // and the pink card copy is allowed. The short link was prepared while this screen was open.
+  bouquetLink = `${base}#${readyHash()}`;
+  const copying = copyLetter();
   prepareGmail();
-  if(tab){ tab.location.href = _lastGmailUrl; }
+  const tab = window.open(_lastGmailUrl, '_blank');
   document.getElementById('popupBlocked').style.display = tab ? 'none' : 'block';
   fillConfirm();
   setCopyStatus(null);
   showSendPanel('send-confirm-panel');
   copying.then(setCopyStatus);
+}
+
+/* Short (compressed) link, prepared ahead of the click. If it isn't ready, or this browser can't
+   compress, the plain #b= link is used, which every version of the bouquet page opens. */
+let _prepared={key:'',hash:''};
+function payloadKey(){ return JSON.stringify(bouquetPayload()); }
+async function prepareLink(){
+  if(typeof makeBouquetHash!=='function')return;
+  const key=payloadKey();
+  if(_prepared.key===key)return;
+  try{ const hash=await makeBouquetHash(); if(payloadKey()===key)_prepared={key,hash}; }catch(e){}
+}
+function readyHash(){
+  return (_prepared.key===payloadKey() && _prepared.hash) ? _prepared.hash : 'b='+encodeBouquet();
 }
 
 function prepareGmail(){
@@ -86,7 +99,7 @@ function fillConfirm(){
 async function sendWithEmailJS(base){
   const btn=document.getElementById('sendBtn');
   btn.disabled=true; const label=btn.textContent; btn.textContent='Sending…';
-  const hash=await makeBouquetHash();
+  const hash=readyHash();
   bouquetLink=`${base}#${hash}`;
   try{
     const res=await fetch('https://api.emailjs.com/api/v1.0/email/send',{
@@ -220,3 +233,15 @@ ${dist?`<tr><td align="center" style="padding:12px 28px 0;"><span style="display
 <div style="padding-top:14px;font-family:${sans};font-size:11px;color:#c0a8a8;">Sent via Bloom Across Miles 🌷</div>
 </td></tr></table>`;
 }
+
+/* The sender's name is part of the link, so keep the prepared link in step while it's typed */
+document.addEventListener('DOMContentLoaded',()=>{
+  const name=document.getElementById('senderName');
+  if(!name)return;
+  let t=null;
+  name.addEventListener('input',()=>{
+    const v=name.value.trim();
+    if(v){ S.note.from=v; }
+    clearTimeout(t); t=setTimeout(prepareLink,250);
+  });
+});

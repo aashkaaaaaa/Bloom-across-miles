@@ -1,13 +1,16 @@
 /* Home page: hero, feature cards, version badges, floating petals */
 /* ── HOME ── */
 #home{display:flex;flex-direction:column;min-height:100vh;background:linear-gradient(160deg,#fff8f9 0%,#fdf4ff 50%,#f4fff8 100%);position:relative;overflow:hidden;}
-#landingPetals{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+/* Petals drift across the visible screen (fixed), behind the page content */
+#landingPetals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+#heroSvg{animation:heroSway 5s ease-in-out infinite;transform-origin:50% 92%;}
 .link-soft{padding:14px 26px;border-radius:16px;background:rgba(255,255,255,.85);border:1.5px solid #f2e5e2;font-size:15px;font-weight:600;color:#5c4b49;cursor:pointer;backdrop-filter:blur(8px);transition:border-color .15s;text-decoration:none;display:inline-flex;align-items:center;}
 .link-soft:hover{border-color:#f29ca3;}
 @keyframes floatUp{0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
 @keyframes floatBob{0%,100%{transform:translateY(0px) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
 @keyframes shimmer{0%,100%{opacity:.5;}50%{opacity:1;}}
-@keyframes petalDrift{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}10%{opacity:.7;}90%{opacity:.7;}100%{transform:translateY(-100vh) translateX(40px) rotate(360deg);opacity:0;}}
+@keyframes petalDrift{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}8%{opacity:1;}85%{opacity:1;}100%{transform:translateY(-112vh) translateX(60px) rotate(360deg);opacity:0;}}
+@keyframes heroSway{0%,100%{transform:rotate(-2.2deg);}50%{transform:rotate(2.2deg);}}
 .land-fade{animation:floatUp .7s cubic-bezier(.22,1,.36,1) both;}
 .land-fade-1{animation-delay:.05s;}
 .land-fade-2{animation-delay:.15s;}
@@ -30,4 +33,10 @@
   #hero-split>div:last-child{margin-top:36px;}
   #hero-split>div:last-child svg{width:240px!important;height:auto!important;}
   #hero-split>div:last-child div[style*="320px"]{width:260px!important;height:260px!important;}
+}
+
+/* People who turn off animations in their device settings get a still page */
+@media (prefers-reduced-motion: reduce){
+  .land-fade,.float-bob,#heroSvg,.bg-petal{animation:none!important;}
+  #landingPetals{display:none;}
 }
