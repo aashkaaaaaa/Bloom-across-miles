@@ -26,7 +26,13 @@ function loadDefault(){S.stems=defaultStems();selUid='s7';render();}
 function setupEvents(){
   const svg=document.getElementById('mainSvg');
   svg.addEventListener('pointerdown',e=>{
-    if(e.target.closest('.action-btn'))return;
+    // Toolbar buttons act on press: the canvas is redrawn often, so waiting for a full click can miss
+    const btn=e.target.closest('.action-btn');
+    if(btn){
+      e.preventDefault();e.stopPropagation();
+      ({flip:flipSel,up:()=>moveSel(1),down:()=>moveSel(-1),duplicate:dupSel,delete:delSel})[btn.dataset.action]?.();
+      return;
+    }
     const g=e.target.closest('[data-gizmo]');
     if(g&&selUid){
       e.stopPropagation();e.preventDefault();
@@ -58,8 +64,10 @@ function setupEvents(){
     else if(dragCtx.mode==='scale'){const cd=Math.max(15,Math.hypot(pt.x-s.x,pt.y-s.y));s.sc=parseFloat(Math.max(0.35,Math.min(2.2,dragCtx.origSc*cd/dragCtx.startDist)).toFixed(2));feedback=`${Math.round(s.sc*100)}%`;}
     render();
   });
-  svg.addEventListener('pointerup',()=>{dragCtx=null;feedback=null;render();});
-  svg.addEventListener('pointercancel',()=>{dragCtx=null;feedback=null;render();});
+  // Redraw on release only after a drag, so a plain click isn't swallowed by a redraw
+  const endDrag=()=>{const was=dragCtx||feedback;dragCtx=null;feedback=null;if(was)render();};
+  svg.addEventListener('pointerup',endDrag);
+  svg.addEventListener('pointercancel',endDrag);
   svg.addEventListener('wheel',e=>{
     e.preventDefault();if(!selUid)return;
     const s=S.stems.find(st=>st.uid===selUid);if(!s)return;

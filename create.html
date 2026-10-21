@@ -174,7 +174,18 @@
 
   </div>
 
-  <!-- PANEL B: Gmail draft opened, letter copied: sender pastes and sends -->
+  <!-- PANEL: sent by EmailJS -->
+  <div id="send-done-panel" class="send-card" style="display:none;">
+    <div style="font-size:52px;margin-bottom:10px;">💌</div>
+    <h2 class="font-serif" style="font-size:24px;font-weight:600;color:#5c4b49;margin-bottom:8px;">Sent!</h2>
+    <p style="font-size:14px;color:#94807d;line-height:1.7;margin-bottom:22px;">Your bouquet is on its way to <strong id="doneRecipient" style="color:#d4747d;"></strong>.<br>Ask them to check their spam folder if it doesn't show up.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="previewAsRecipient()" class="btn-secondary" style="padding:11px;">👀 Preview</button>
+      <button onclick="startFresh()" class="btn-primary" style="padding:11px;">🌸 Send another</button>
+    </div>
+  </div>
+
+  <!-- PANEL B: Gmail opened with the letter already filled in -->
   <div id="send-confirm-panel" class="send-card" style="display:none;flex-direction:column;align-items:center;">
 
     <!-- Step indicator -->
@@ -199,26 +210,31 @@
     <p style="font-size:14px;color:#94807d;margin-bottom:16px;line-height:1.7;text-align:center;">
       A Gmail draft to <strong id="previewRecipient" style="color:#d4747d;"></strong> just opened in a new tab.
     </p>
-
-    <p id="copyStatus" style="width:100%;font-size:12px;font-weight:600;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;"></p>
-
-    <div style="width:100%;background:linear-gradient(135deg,#fff9f9,#fff4ff);border:2px solid #fad6d9;border-radius:16px;padding:16px 18px;margin-bottom:16px;text-align:left;">
-      <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:#5c4b49;">
-        <div><strong style="color:#d4747d;">1.</strong> Switch to the Gmail tab and click inside the message</div>
-        <div><strong style="color:#d4747d;">2.</strong> Press <strong>Ctrl + A</strong> (<strong>Cmd + A</strong> on Mac) to select the text already there</div>
-        <div><strong style="color:#d4747d;">3.</strong> Press <strong>Ctrl + V</strong> (<strong>Cmd + V</strong>) to paste your letter card over it</div>
-        <div><strong style="color:#d4747d;">4.</strong> Press <strong>Send</strong></div>
-        <div style="font-size:11px;color:#a8908d;margin-top:2px;">Forgot to paste? They still get a plain version with the bouquet link.</div>
-      </div>
-    </div>
-
+    <p id="popupBlocked" style="display:none;width:100%;background:#fff0f1;border:1px solid #fad6d9;color:#c25763;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;margin-bottom:14px;">Your browser blocked the Gmail tab. Press <strong>Open Gmail</strong> below.</p>
     <p id="linkWarn" style="display:none;width:100%;background:#fff6e6;border:1px solid #f5e0b5;color:#9a6b1f;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;text-align:left;margin-bottom:14px;"></p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:10px;">
-      <button onclick="copyLetterAgain()" class="btn-secondary" style="padding:11px;">📋 Copy letter again</button>
-      <button onclick="reopenGmail()" class="btn-secondary" style="padding:11px;">📧 Re-open Gmail</button>
+    <p id="copyStatus" style="width:100%;font-size:12px;font-weight:600;border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;"></p>
+
+    <div class="paste-steps">
+      <p class="paste-steps-title">Paste &amp; send</p>
+      <ol>
+        <li>Switch to the Gmail tab and click inside the message area.</li>
+        <li>Press <kbd class="mod">Ctrl</kbd> + <kbd>V</kbd> to paste your pink letter card.</li>
+        <li>Press <strong>Send</strong>.</li>
+      </ol>
+      <p class="paste-steps-note">Nothing pasted? Press <strong>Copy card again</strong> below, then <kbd class="mod">Ctrl</kbd> + <kbd>V</kbd>.</p>
     </div>
-    <button onclick="previewAsRecipient()" class="btn-secondary" style="width:100%;padding:11px;margin-bottom:14px;">👀 Preview what they'll see</button>
+
+    <details class="pretty-card">
+      <summary>👀 See the card / copy it again</summary>
+      <div id="cardPreview" aria-hidden="true"></div>
+      <button onclick="copyLetterAgain()" class="btn-secondary" style="width:100%;padding:10px;">📋 Copy card again</button>
+    </details>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:10px;">
+      <button onclick="reopenGmail()" class="btn-secondary" style="padding:11px;">📧 Open Gmail</button>
+      <button onclick="previewAsRecipient()" class="btn-secondary" style="padding:11px;">👀 Preview</button>
+    </div>
 
     <div style="display:flex;gap:10px;width:100%;">
       <button onclick="startFresh()" class="btn-primary" style="flex:1;padding:11px;">🌸 Send another</button>

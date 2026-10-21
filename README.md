@@ -43,8 +43,12 @@ features/                  One folder per feature. Features don't edit each othe
   send/                    Send screen, Gmail draft, copied letter card
   recipient/               Envelope, love letter, bouquet reveal, confetti
 
+setup/
+  emailjs-template.html    Email card to paste into EmailJS (one-click sending)
+
 assets/
   favicon.svg, apple-touch-icon.png, og-image.png (link preview)
+  email-confetti.gif       Animated confetti strip at the top of the email card
   fonts/                   Self-hosted fonts and their licence
 ```
 
@@ -99,6 +103,27 @@ Source: GitHub Docs, "Managing a custom domain for your GitHub Pages site".
 After the domain works, change `og:image` in each page's `<head>` from `assets/og-image.png` to the full address, e.g. `https://example.com/assets/og-image.png`.
 
 If you ever host somewhere other than GitHub Pages, update the Hosting section of `privacy.html`.
+
+## One-click sending (optional, EmailJS)
+
+Without this, Send opens a Gmail draft with the letter filled in as plain text. With it, Send emails the pink letter card (with the confetti GIF) straight away, from your Gmail, through EmailJS (https://www.emailjs.com).
+
+1. Create a free EmailJS account.
+2. Add an email service, choose Gmail, and connect your Gmail account. Note its **Service ID**.
+3. Create an email template:
+   - **To Email:** `{{to_email}}`
+   - **From Name:** `{{from_name}}`
+   - **Subject:** `🌷 {{from_name}} sent you a bouquet across the miles`
+   - **Content:** switch the editor to code/HTML and paste everything from `setup/emailjs-template.html` (below its first comment).
+   Save it and note its **Template ID**.
+4. Copy your account's **Public Key**.
+5. Put the three values into `EMAILJS` in `core/config.js` and upload that file.
+
+Things to know (from EmailJS's pricing and docs pages):
+- The free plan allows 200 emails a month, keeps an EmailJS footer on emails, and has no "allowed domains" setting, so anyone who reads the site's code could use your Public Key to send this same bouquet email. The template only lets them change the names, distance and the part after `#`; the button always points at your own bouquet page.
+- Template values in `{{double braces}}` are escaped by EmailJS. Don't switch them to `{{{triple}}}`, which would let anyone inject their own HTML into emails sent from your Gmail.
+- If you move the site (for example to a custom domain), change the two site addresses inside the template too.
+- If sending fails, the page offers "Send with Gmail instead".
 
 ## Distance calculator
 

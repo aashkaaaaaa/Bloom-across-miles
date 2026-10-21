@@ -1,3 +1,19 @@
 /* Send screen */
 /* ── SEND SCREEN ── */
 .send-card{background:white;border-radius:24px;padding:40px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(92,75,73,.12);text-align:center;}
+
+/* Optional pink-card section on the confirm screen */
+.pretty-card{width:100%;text-align:left;border:1.5px dashed #f0cfd3;border-radius:14px;padding:12px 14px;margin-bottom:14px;background:#fffdfd;}
+.pretty-card summary{cursor:pointer;font-size:13px;font-weight:600;color:#d4747d;}
+.pretty-card[open] summary{margin-bottom:12px;}
+.pretty-card ol{padding-left:18px;display:flex;flex-direction:column;gap:6px;margin:12px 0;}
+.pretty-card li{font-size:13px;color:#5c4b49;line-height:1.55;}
+#cardPreview{zoom:.7;pointer-events:none;}
+#screen-send kbd{display:inline-block;min-width:22px;padding:1px 7px;border:1px solid #e2cfcb;border-bottom-width:2px;border-radius:6px;background:#fff;font-family:inherit;font-size:12px;font-weight:700;color:#5c4b49;text-align:center;}
+@media(max-width:640px){.send-card{padding:28px 20px!important;width:calc(100% - 24px)!important;}#cardPreview{zoom:.6;}}
+.paste-steps{width:100%;background:linear-gradient(135deg,#fff9f9,#fff4ff);border:2px solid #fad6d9;border-radius:16px;padding:14px 18px;margin-bottom:14px;text-align:left;}
+.paste-steps-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#d4747d;margin-bottom:8px;}
+.paste-steps ol{padding-left:18px;display:flex;flex-direction:column;gap:6px;}
+.paste-steps li{font-size:13px;color:#5c4b49;line-height:1.55;}
+.paste-steps-note{font-size:11px;color:#a8908d;margin-top:8px;}
+.pretty-card #cardPreview{margin-bottom:10px;}
