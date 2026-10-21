@@ -1,6 +1,6 @@
-/* Landing page: floating petals, hero bouquet, scroll to 'How it works' */
+/* Home page: floating petals and the hero bouquet */
 
-function goToLanding(){showScreen('landing');}
+document.addEventListener('DOMContentLoaded',()=>{spawnLandingPetals();renderHero();});
 
 function spawnLandingPetals(){
   const c=document.getElementById('landingPetals');
@@ -13,10 +13,6 @@ function spawnLandingPetals(){
     d.style.cssText=`left:${Math.random()*100}%;bottom:-40px;font-size:${16+Math.random()*18}px;animation-duration:${10+Math.random()*12}s;animation-delay:${Math.random()*8}s;opacity:.35;`;
     c.appendChild(d);
   }
-}
-
-function scrollToFeatures(){
-  document.getElementById('features').scrollIntoView({behavior:'smooth'});
 }
 
 /* Landing hero: the default arrangement drawn with the builder's own flowers, blush wrap and rose ribbon, no gift tag */

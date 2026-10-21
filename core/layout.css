@@ -1,0 +1,47 @@
+/* Shared site header, footer and content-page styles (Home, About, Privacy, 404) */
+
+.site-header{position:sticky;top:0;z-index:40;background:rgba(255,253,251,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(242,229,226,.7);}
+.site-header-inner{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.site-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#5c4b49;}
+.site-logo img{width:30px;height:30px;}
+.site-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;}
+.site-nav{display:flex;align-items:center;gap:6px;}
+.site-nav a{font-size:13px;font-weight:600;color:#8c7774;text-decoration:none;padding:8px 12px;border-radius:10px;transition:background .15s,color .15s;}
+.site-nav a:hover{background:#fff0f1;color:#5c4b49;}
+.site-nav a[aria-current="page"]{color:#d4747d;}
+.site-nav .site-cta{background:linear-gradient(135deg,#f29ca3,#e68594);color:#fff;padding:9px 16px;margin-left:6px;box-shadow:0 4px 16px rgba(242,156,163,.35);}
+.site-nav .site-cta:hover{background:linear-gradient(135deg,#f29ca3,#e68594);color:#fff;opacity:.92;}
+
+.site-footer{border-top:1px solid #f2e5e2;background:rgba(255,253,251,.7);position:relative;z-index:10;}
+.site-footer-inner{max-width:1100px;margin:0 auto;padding:28px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.site-footer p{font-size:12px;color:#a8908d;}
+.site-footer nav{display:flex;gap:18px;flex-wrap:wrap;}
+.site-footer nav a{font-size:12px;font-weight:600;color:#8c7774;text-decoration:none;}
+.site-footer nav a:hover{color:#d4747d;}
+
+/* Content pages */
+.page{min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(160deg,#fff8f9 0%,#fdf4ff 50%,#f4fff8 100%);}
+.page-main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:48px 24px 64px;}
+.prose{background:rgba(255,255,255,.82);border:1.5px solid rgba(242,229,226,.9);border-radius:24px;padding:40px;box-shadow:0 12px 40px rgba(92,75,73,.06);}
+.prose .eyebrow{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #fad6d9;border-radius:99px;padding:5px 14px;font-size:11px;font-weight:600;color:#d4747d;margin-bottom:16px;}
+.prose h1{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,40px);font-weight:600;color:#5c4b49;line-height:1.15;margin-bottom:12px;}
+.prose h2{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:#5c4b49;margin:32px 0 10px;}
+.prose p,.prose li{font-size:15px;line-height:1.75;color:#7d6966;}
+.prose p{margin-bottom:12px;}
+.prose ul{padding-left:20px;margin-bottom:12px;}
+.prose li{margin-bottom:6px;}
+.prose strong{color:#5c4b49;}
+.prose a{color:#d4747d;font-weight:600;}
+.prose .lead{font-size:17px;color:#8c7774;}
+.prose .muted{font-size:12px;color:#b59e9b;margin-top:28px;}
+.prose-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;}
+a.btn-bouquet,a.btn-secondary,a.btn-primary{text-decoration:none;}
+
+@media(max-width:640px){
+  .site-header-inner{padding:10px 16px;}
+  .site-nav a:not(.site-cta){display:none;}
+  .site-logo span{font-size:16px;}
+  .site-footer-inner{padding:24px 16px;flex-direction:column;align-items:flex-start;}
+  .page-main{padding:28px 16px 48px;}
+  .prose{padding:26px 20px;border-radius:20px;}
+}

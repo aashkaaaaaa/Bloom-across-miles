@@ -1,14 +1,21 @@
 /* Draws a bouquet from state S: flowers, wrapper, ribbon, gift tag and the builder's handles.
    Used by the builder canvas, the landing hero and the recipient's reveal. */
 
+/* Shadow filters every bouquet SVG needs. Preview SVGs get their own renamed copy. */
+const BOUQUET_DEFS=`<defs>
+  <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#5C4B49" flood-opacity="0.10"/></filter>
+  <filter id="uiShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5C4B49" flood-opacity="0.18"/></filter>
+</defs>`;
+
 function render(svgId='mainSvg',preview=false){
   const svg=document.getElementById(svgId);if(!svg)return;
   if(preview){
-    // Filter IDs get a per-SVG suffix: url(#softShadow) would otherwise point at the copy inside the hidden builder SVG and the wrapper/tag would not paint
-    const markup=`${document.querySelector('#mainSvg defs').outerHTML}<g>${wrapBack()}</g><g>${flowersMarkup(true)}</g><g>${wrapFront()}</g><g>${ribbonMarkup()}</g><g>${tagMarkup(true)}</g>`;
+    // Filter IDs get a per-SVG suffix so two bouquets on one page never point at each other's filters
+    const markup=`${BOUQUET_DEFS}<g>${wrapBack()}</g><g>${flowersMarkup(true)}</g><g>${wrapFront()}</g><g>${ribbonMarkup()}</g><g>${tagMarkup(true)}</g>`;
     svg.innerHTML=markup.replace(/\b(softShadow|uiShadow)\b/g,`$1_${svgId}`);
     return;
   }
+  if(!svg.querySelector('#softShadow'))svg.insertAdjacentHTML('afterbegin',BOUQUET_DEFS);
   document.getElementById('wrapBack').innerHTML=wrapBack();
   document.getElementById('flowersLayer').innerHTML=flowersMarkup(false);
   document.getElementById('wrapFront').innerHTML=wrapFront();
@@ -27,24 +34,33 @@ function flowersMarkup(preview){
   }).join('');
 }
 
+/* Handles are drawn in bouquet units; on a small screen the canvas shrinks, so grow them back to finger size */
+function uiScale(){
+  const svg=document.getElementById('mainSvg');
+  const w=svg?svg.getBoundingClientRect().width:0;
+  return w>0?Math.min(1.8,Math.max(1,500/w)):1;
+}
+
 function gizmoMarkup(){
   if(!selUid)return'';
   const s=S.stems.find(st=>st.uid===selUid);if(!s)return'';
   const hw=72*s.sc,topH=135*s.sc,botH=28*s.sc,rotLen=32,rotY=-topH-rotLen;
-  const pillX=Math.max(110,Math.min(490,s.x));
-  const pillY=(s.y+topH+46>680)?s.y-topH-46:s.y+botH+46;
+  const k=uiScale();
+  const pillX=Math.max(100*k,Math.min(600-100*k,s.x));
+  const pillY=(s.y+topH+46*k>680)?s.y-topH-46*k:s.y+botH+46*k;
   return `<g style="user-select:none">
     <g transform="translate(${s.x},${s.y}) rotate(${s.r})">
       <rect data-gizmo="move" x="${-hw}" y="${-topH}" width="${hw*2}" height="${topH+botH}" rx="12" fill="rgba(255,240,242,.04)" stroke="#E58C94" stroke-width="2" stroke-dasharray="6,4" class="gizmo-move" style="cursor:move"/>
       <line x1="0" y1="${-topH}" x2="0" y2="${rotY}" stroke="#E58C94" stroke-width="2"/>
-      <g data-gizmo="rotate" transform="translate(0,${rotY})" class="gizmo-rotate" filter="url(#uiShadow)">
+      <g data-gizmo="rotate" transform="translate(0,${rotY}) scale(${k})" class="gizmo-rotate" filter="url(#uiShadow)">
+        <circle cx="0" cy="0" r="24" fill="transparent"/>
         <circle cx="0" cy="0" r="15" fill="#FFF" stroke="#E58C94" stroke-width="2.2"/>
         <path d="M-5-2 A5.5 5.5 0 1 1-1 5.5 M-5-6 L-5.5-1.5 L-1-2" fill="none" stroke="#D46A74" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </g>
-      ${[[-hw,-topH],[hw,-topH],[-hw,botH],[hw,botH]].map(([cx,cy])=>`<g data-gizmo="scale" transform="translate(${cx},${cy})" class="gizmo-scale" filter="url(#uiShadow)"><circle cx="0" cy="0" r="13" fill="transparent"/><circle cx="0" cy="0" r="7" fill="#FFF" stroke="#E58C94" stroke-width="2.2"/></g>`).join('')}
+      ${[[-hw,-topH],[hw,-topH],[-hw,botH],[hw,botH]].map(([cx,cy])=>`<g data-gizmo="scale" transform="translate(${cx},${cy}) scale(${k})" class="gizmo-scale" filter="url(#uiShadow)"><circle cx="0" cy="0" r="20" fill="transparent"/><circle cx="0" cy="0" r="7" fill="#FFF" stroke="#E58C94" stroke-width="2.2"/></g>`).join('')}
     </g>
     ${feedback?`<g transform="translate(${s.x},${Math.max(32,s.y-topH-60)})" style="pointer-events:none" filter="url(#uiShadow)"><rect x="-36" y="-14" width="72" height="26" rx="13" fill="#5C4B49"/><text x="0" y="2" text-anchor="middle" fill="#FFFDF9" font-family="'Plus Jakarta Sans',sans-serif" font-size="11" font-weight="700">${feedback}</text></g>`:''}
-    <g transform="translate(${pillX},${pillY})" filter="url(#uiShadow)">
+    <g transform="translate(${pillX},${pillY}) scale(${k})" filter="url(#uiShadow)">
       <rect x="-96" y="-18" width="192" height="36" rx="18" fill="#FFF" stroke="#F0D8D6" stroke-width="1.8"/>
       <g class="action-btn" onclick="flipSel()" transform="translate(-72,0)"><circle cx="0" cy="0" r="14" fill="#FFFDF9"/><path d="M-6 0 L6 0 M-3-3.5 L-6.5 0 L-3 3.5 M3-3.5 L6.5 0 L3 3.5" fill="none" stroke="#5C4B49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
       <g class="action-btn" onclick="moveSel(1)" transform="translate(-36,0)"><circle cx="0" cy="0" r="14" fill="#FFFDF9"/><path d="M0 5 L0-5 M-4-1 L0-5.5 L4-1" fill="none" stroke="#5C4B49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>

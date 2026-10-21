@@ -4,3 +4,26 @@
 .gizmo-rotate{cursor:grab;touch-action:none;}.gizmo-rotate:active{cursor:grabbing;}
 .gizmo-scale{cursor:nwse-resize;touch-action:none;}.gizmo-move{cursor:move;touch-action:none;}
 .action-btn{cursor:pointer;}.action-btn:hover circle{fill:#fff0f1!important;}
+
+#screen-builder{user-select:none;-webkit-user-select:none;}
+#mainSvg{touch-action:none;}   /* dragging flowers must not scroll the page */
+.builder-tip-short{display:none;}
+
+/* ── Phones and small tablets: canvas on top, tools underneath ── */
+@media(max-width:760px){
+  #builderHeader{padding:10px 12px!important;}
+  #builderHeader h1{font-size:17px!important;}
+  #builderHeader p{display:none;}
+  #builderActions{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important;}
+  #builderActions .btn-primary{grid-column:1/-1;padding:12px!important;font-size:14px!important;}
+  #builderLayout{flex-direction:column;overflow:visible!important;}
+  #stage{order:-1;min-height:0!important;padding:12px 10px!important;}
+  #stage .canvas-box{max-height:58vh!important;max-width:420px!important;}
+  #builderPanel{width:100%!important;max-height:none!important;border-right:none!important;border-top:1px solid #f2e5e2;}
+  #builderPanel [id^="tb-"]{font-size:13px!important;padding:10px 4px!important;}
+  #flowerGrid{grid-template-columns:repeat(auto-fill,minmax(86px,1fr))!important;}
+  #wrapGrid{grid-template-columns:repeat(3,1fr)!important;}
+  #tp-note .inp{font-size:16px!important;}  /* 16px stops iPhones zooming into the field */
+  .builder-tip-long{display:none;}
+  .builder-tip-short{display:inline;}
+}

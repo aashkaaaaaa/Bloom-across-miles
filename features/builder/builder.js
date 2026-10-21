@@ -1,6 +1,13 @@
-/* Builder: flower grid, default arrangement, drag/rotate/scale handles, flower actions, wrap and ribbon tabs, note */
+/* Builder: flower grid, drag/rotate/scale handles, flower actions, wrap and ribbon tabs, note.
+   Lives on create.html. Your unfinished bouquet is kept in this browser (see "Draft" below). */
 
-function goToBuilder(){showScreen('builder');}
+document.addEventListener('DOMContentLoaded',()=>{
+  buildGrid();setupEvents();
+  if(!restoreDraft()){syncNote();loadDefault();}
+  syncMsgPreview();
+  startDraftAutosave();
+});
+
 function backToBuilder(){showScreen('builder');}
 
 function buildGrid(){
@@ -13,20 +20,6 @@ function buildGrid(){
     </button>`).join('');
 }
 
-function defaultStems(){
-  return [
-    {uid:'s1',id:'cherry_blossom',x:215,y:275,r:-24,sc:1.05,fx:false},
-    {uid:'s2',id:'delphinium',x:385,y:275,r:22,sc:1.05,fx:false},
-    {uid:'s3',id:'daffodil',x:255,y:265,r:-12,sc:1.0,fx:false},
-    {uid:'s4',id:'mimosa',x:345,y:258,r:10,sc:1.05,fx:false},
-    {uid:'s5',id:'forget_me_not',x:300,y:248,r:-3,sc:1.05,fx:false},
-    {uid:'s6',id:'yellow_rose',x:265,y:305,r:-10,sc:1.05,fx:false},
-    {uid:'s7',id:'pink_rose',x:340,y:312,r:12,sc:1.05,fx:false},
-    {uid:'s8',id:'pink_tulip',x:225,y:318,r:-22,sc:1.0,fx:false},
-    {uid:'s9',id:'peach_tulip',x:382,y:322,r:24,sc:1.0,fx:true},
-    {uid:'s10',id:'lily_valley',x:302,y:320,r:2,sc:1.0,fx:false}
-  ];
-}
 
 function loadDefault(){S.stems=defaultStems();selUid='s7';render();}
 
@@ -107,3 +100,32 @@ function syncNote(){S.note.show=document.getElementById('showTag').checked;S.not
 function syncMsgPreview(){const el=document.getElementById('msgPreview');if(el)el.textContent=S.note.msg||'';}
 
 function nextPrompt(){promptIdx=(promptIdx+1)%PROMPTS.length;document.getElementById('noteMsg').value=PROMPTS[promptIdx];syncNote();}
+
+/* ── Draft ──
+   Saves the bouquet in this browser so going to another page and back doesn't lose it.
+   It stays on this device only. Wrapped in try/catch because private windows can block storage. */
+const DRAFT_KEY='bam-draft-v1';
+function draftData(){return JSON.stringify({stems:S.stems,wrapper:S.wrapper,ribbon:S.ribbon,note:S.note,promptIdx});}
+function saveDraft(){try{localStorage.setItem(DRAFT_KEY,draftData());}catch(e){}}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+function restoreDraft(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');}catch(e){}
+  if(!d||!Array.isArray(d.stems)||!d.note)return false;
+  S.stems=d.stems.filter(s=>FLOWERS.some(f=>f.id===s.id));
+  S.note={show:d.note.show!==false,to:String(d.note.to||''),from:String(d.note.from||''),dist:String(d.note.dist||''),msg:String(d.note.msg||'')};
+  promptIdx=+d.promptIdx||0;
+  document.getElementById('showTag').checked=S.note.show;
+  document.getElementById('noteTo').value=S.note.to;
+  document.getElementById('noteFrom').value=S.note.from;
+  document.getElementById('noteDist').value=S.note.dist;
+  document.getElementById('noteMsg').value=S.note.msg;
+  setWrapper(d.wrapper||'kraft');setRibbon(d.ribbon||'rose');
+  selUid=null;render();
+  return true;
+}
+function startDraftAutosave(){
+  let last=draftData();
+  setInterval(()=>{const now=draftData();if(now!==last){last=now;saveDraft();}},800);
+  window.addEventListener('pagehide',saveDraft);
+}

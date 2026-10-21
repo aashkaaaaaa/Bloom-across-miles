@@ -1,6 +1,7 @@
 /* Base: reset, typography helpers, shared buttons, inputs, toast */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#fdf8f3;color:#5c4b49;overflow-x:hidden;user-select:none;-webkit-user-select:none;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fdf8f3;color:#5c4b49;overflow-x:hidden;}
+a{color:inherit;}
 .font-serif{font-family:'Playfair Display',serif;}
 .font-hand{font-family:'Caveat',cursive;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:#fdf6f4;}::-webkit-scrollbar-thumb{background:#e5c9c6;border-radius:9999px;}
@@ -22,3 +23,4 @@ input[type=checkbox]{accent-color:#e58c94;}input[type=range]{accent-color:#e58c9
 /* ── TOAST ── */
 #toast{position:fixed;bottom:24px;right:24px;z-index:100;background:#5c4b49;color:white;padding:12px 18px;border-radius:16px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;}
 #toast.show{transform:translateY(0);opacity:1;}
+@media(max-width:640px){#toast{left:16px;right:16px;bottom:16px;justify-content:center;}}

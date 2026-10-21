@@ -1,7 +1,9 @@
 /* Send screen: builds the link, opens the Gmail draft and copies the letter card to paste in */
 
 function goToSend(){
-  document.getElementById('senderName').value=S.note.from||'';
+  // Leave the name empty while it's still the placeholder sign-off, so the subject never says "Yours Always sent you..."
+  const from=(S.note.from||'').trim();
+  document.getElementById('senderName').value=(from&&from!=='Yours Always')?from:'';
   syncMsgPreview();
   showScreen('send');
 }
@@ -12,11 +14,17 @@ function backToForm(){
   document.getElementById('sendBtn').disabled=false;
 }
 
-/* The address the recipient's link should point at, or '' if there is none that would work for them */
+/* The recipient page the link should open (bouquet.html next to this page), or '' if no link would work for them */
 function shareBase(){
-  if(APP_URL)return APP_URL.split('#')[0];
-  if(/^(https?|file):$/.test(location.protocol))return location.href.split('#')[0];
+  if(APP_URL)return new URL('bouquet.html',APP_URL.replace(/\/?$/,'/')).href;
+  if(/^(https?|file):$/.test(location.protocol))return new URL('bouquet.html',location.href).href;
   return '';
+}
+
+/* "Send another": forget this bouquet and open a fresh builder */
+function startFresh(){
+  if(typeof clearDraft==='function')clearDraft();
+  location.href='create.html';
 }
 
 function sendLetter(){
@@ -25,9 +33,10 @@ function sendLetter(){
   const warn = document.getElementById('sendWarn');
   warn.style.display='none';
   if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('Please enter a valid email address.'); return; }
+  if(!senderN){ toast('Add your name so they know who it\'s from.'); document.getElementById('senderName').focus(); return; }
   const base = shareBase();
   if(!base){
-    warn.textContent="This page is open inside a preview window, so it can't make a link that will open for them. Open it from where it's hosted (or set APP_URL at the top of the script), then send.";
+    warn.textContent="This page is open inside a preview window, so it can't make a link that will open for them. Open it from where it's hosted (or set APP_URL in core/config.js), then send.";
     warn.style.display='block';
     return;
   }
@@ -39,9 +48,10 @@ function sendLetter(){
   // Copy the styled letter card first, while the click still counts as a user action
   const copying = copyLetter();
 
-  // Gmail draft with recipient and subject; the body is pasted in by the sender
+  // Gmail draft with recipient, subject and a plain-text version of the letter card.
+  // The sender pastes the styled card over it; if they forget, the email still works.
   const subject = `🌷 ${S.note.from||'Someone'} sent you a bouquet across the miles`;
-  _lastGmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}`;
+  _lastGmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildEmailText(bouquetLink))}`;
   window.open(_lastGmailUrl, '_blank');
 
   document.getElementById('previewRecipient').textContent = email;

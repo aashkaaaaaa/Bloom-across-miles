@@ -7,7 +7,9 @@
 
 /* ── ENVELOPE ── */
 #envelope-wrap{position:relative;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
-.env-container{position:relative;width:320px;height:240px;cursor:pointer;perspective:900px;}
+.env-container{position:relative;width:320px;height:240px;cursor:pointer;perspective:900px;margin-top:0;transition:margin-top .9s cubic-bezier(.22,1,.36,1);}
+/* Opening: the flap swings up about 140px and the letter rises above the envelope, so move it down to keep the heading clear */
+#envelope-wrap.opened .env-container{margin-top:170px;}
 /* envelope body */
 .env-body{position:absolute;inset:0;background:#f9b8c4;border-radius:4px 4px 16px 16px;box-shadow:0 12px 40px rgba(249,156,163,.35);}
 /* back flap - the triangle pointing up, behind letter */
@@ -21,13 +23,18 @@
 /* front flap - opens upward via CSS transform */
 .env-front-flap{
   position:absolute;top:0;left:0;right:0;height:0;
-  border-left:160px solid transparent;border-right:160px solid transparent;border-top:140px solid #f9b8c4;
+  border-left:160px solid transparent;border-right:160px solid transparent;border-top:140px solid #f6aab9;
+  filter:drop-shadow(0 3px 3px rgba(201,115,128,.28));
   z-index:8;
   transform-origin:top center;
   transform:rotateX(0deg);
-  transition:transform 1.2s cubic-bezier(.4,0,.2,1);
+  transition:transform 1.2s cubic-bezier(.4,0,.2,1),z-index 0s linear .55s;
 }
-.env-front-flap.open{transform:rotateX(-180deg);}
+/* Once it swings past upright, the flap goes behind the rising letter */
+.env-front-flap.open{transform:rotateX(-180deg);z-index:4;}
+/* Heart seal sits on the tip of the closed flap and fades as it opens */
+.env-seal{position:absolute;top:104px;left:50%;transform:translateX(-50%);z-index:9;pointer-events:none;transition:opacity .35s ease,transform .35s ease;filter:drop-shadow(0 3px 5px rgba(146,43,33,.3));}
+#envelope-wrap.opened .env-seal{opacity:0;transform:translateX(-50%) scale(.6);}
 
 /* letter card - slides up from envelope */
 .letter-card{

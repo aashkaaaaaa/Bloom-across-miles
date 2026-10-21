@@ -1,9 +1,9 @@
-/* Screen containers: only one is visible at a time (see js/navigation.js) */
-/* ── SCREENS ── */
-#screen-landing{display:flex;flex-direction:column;min-height:100vh;background:linear-gradient(160deg,#fff8f9 0%,#fdf4ff 50%,#f4fff8 100%);position:relative;overflow:hidden;}
-#screen-builder{display:none;flex-direction:column;min-height:100vh;}
-#screen-send{display:none;min-height:100vh;align-items:center;justify-content:center;background:#fdf8f3;}
-#screen-recipient{display:none;min-height:100vh;background:#fff0f4;}
-#screen-bouquet{display:none;}
+/* Pages with more than one screen (create.html, bouquet.html) mark each with data-screen.
+   All start hidden; core/screens.js shows one at a time. */
+[data-screen]{display:none;}
+#screen-builder{flex-direction:column;min-height:100vh;}
+#screen-send{min-height:100vh;align-items:center;justify-content:center;background:#fdf8f3;padding:24px 0;}
+#screen-recipient{min-height:100vh;background:#fff0f4;}
+#screen-missing{min-height:100vh;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff8f9 0%,#fdf4ff 50%,#f4fff8 100%);padding:24px;}
 
 @keyframes gentleSway{0%,100%{transform:rotate(-1.4deg);}50%{transform:rotate(1.4deg);}}

@@ -1,5 +1,9 @@
-/* Landing page: hero, feature cards, version badges, floating petals */
-/* ── LANDING PAGE ── */
+/* Home page: hero, feature cards, version badges, floating petals */
+/* ── HOME ── */
+#home{display:flex;flex-direction:column;min-height:100vh;background:linear-gradient(160deg,#fff8f9 0%,#fdf4ff 50%,#f4fff8 100%);position:relative;overflow:hidden;}
+#landingPetals{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.link-soft{padding:14px 26px;border-radius:16px;background:rgba(255,255,255,.85);border:1.5px solid #f2e5e2;font-size:15px;font-weight:600;color:#5c4b49;cursor:pointer;backdrop-filter:blur(8px);transition:border-color .15s;text-decoration:none;display:inline-flex;align-items:center;}
+.link-soft:hover{border-color:#f29ca3;}
 @keyframes floatUp{0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
 @keyframes floatBob{0%,100%{transform:translateY(0px) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
 @keyframes shimmer{0%,100%{opacity:.5;}50%{opacity:1;}}
@@ -23,8 +27,6 @@
   #hero-split{grid-template-columns:1fr!important;padding:20px 20px 8px!important;text-align:center!important;}
   #hero-split>div:first-child{align-items:center!important;padding-right:0!important;text-align:center!important;}
   #hero-split>div:first-child>div:nth-last-child(-n+2){justify-content:center;}
-  #screen-landing>nav{padding:14px 16px!important;}
-  #screen-landing>nav .version-badge{display:none;}
   #hero-split>div:last-child{margin-top:36px;}
   #hero-split>div:last-child svg{width:240px!important;height:auto!important;}
   #hero-split>div:last-child div[style*="320px"]{width:260px!important;height:260px!important;}

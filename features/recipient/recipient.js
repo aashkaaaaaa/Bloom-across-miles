@@ -1,4 +1,9 @@
-/* Recipient experience: envelope, love letter modal, bouquet reveal */
+/* Recipient experience on bouquet.html: envelope, love letter modal, bouquet reveal */
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(loadFromHash())showRecipient();
+  else showScreen('missing');
+});
 
 function openEnvelope(){
   if(envelopeOpened)return;
@@ -7,6 +12,8 @@ function openEnvelope(){
   env.classList.remove('env-bounce');
   env.classList.add('stop');
   document.getElementById('clickHint').style.display='none';
+  // 0. Envelope settles lower so the opening flap and rising letter clear the heading
+  document.getElementById('envelope-wrap').classList.add('opened');
   // 1. Open flap
   document.getElementById('envFlap').classList.add('open');
   // 2. Rise letter after 0.5s
@@ -61,6 +68,7 @@ function showRecipient(){
 /* Puts the envelope back to its closed, bouncing state so it can be opened again */
 function resetEnvelope(){
   envelopeOpened=false;
+  document.getElementById('envelope-wrap').classList.remove('opened');
   const env=document.getElementById('envContainer');
   env.classList.remove('stop');env.classList.add('env-bounce');
   document.getElementById('envFlap').classList.remove('open');
