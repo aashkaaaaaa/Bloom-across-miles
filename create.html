@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Create a bouquet - Bloom Across Miles</title>
+<meta name="description" content="Pick flowers, arrange them, write your letter and send it.">
+<meta name="theme-color" content="#fdf8f3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bloom Across Miles">
+<meta property="og:title" content="Create a bouquet - Bloom Across Miles">
+<meta property="og:description" content="Pick flowers, arrange them, write your letter and send it.">
+<meta property="og:image" content="assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="core/fonts.css">
+<link rel="stylesheet" href="core/base.css">
+<link rel="stylesheet" href="core/screens.css">
+<link rel="stylesheet" href="features/builder/builder.css">
+<link rel="stylesheet" href="features/send/send.css">
+</head>
+<body>
+
+<div id="screen-builder" data-screen="builder" data-display="flex" style="display:flex;">
+  <!-- Header -->
+  <header id="builderHeader" style="background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid #f2e5e2;position:sticky;top:0;z-index:30;padding:12px 20px 12px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html" style="width:40px;height:40px;border-radius:16px;background:#fff0f1;border:1px solid #fad6d9;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:background .15s;" title="Back to home" aria-label="Back to home"><img src="assets/favicon.svg" alt="" width="26" height="26"></a>
+      <div>
+        <h1 class="font-serif" style="font-size:20px;font-weight:600;color:#5c4b49;line-height:1.2;">Create your bouquet</h1>
+        <p style="font-size:11px;color:#94807d;">Build a bouquet & send a love letter across any distance</p>
+      </div>
+    </div>
+    <div id="builderActions" style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="autoArrange()" style="padding:8px 14px;border-radius:10px;font-size:12px;font-weight:500;background:#f7f9f4;color:#688252;border:1px solid #d7e4ca;cursor:pointer;">✨ Auto-Arrange</button>
+      <button onclick="loadSample()" style="padding:8px 14px;border-radius:10px;font-size:12px;font-weight:500;background:#fff9eb;color:#b88736;border:1px solid #f5e0b5;cursor:pointer;">🌸 Surprise</button>
+      <button onclick="goToSend()" class="btn-primary" style="padding:8px 18px;font-size:13px;">💌 Send as Love Letter</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main style="flex:1;display:grid;grid-template-columns:1fr;gap:0;">
+    <div id="builderLayout" style="display:flex;flex:1;overflow:hidden;min-height:0;">
+
+      <!-- Sidebar -->
+      <aside id="builderPanel" style="width:210px;flex-shrink:0;background:white;border-right:1px solid #f2e5e2;display:flex;flex-direction:column;max-height:calc(100vh - 65px);overflow:hidden;">
+        <!-- Tab buttons -->
+        <div style="display:flex;border-bottom:1px solid #f2e5e2;background:#fcf8f7;padding:6px;gap:4px;">
+          <button id="tb-flowers" onclick="switchTab('flowers')" style="flex:1;padding:7px 4px;border-radius:8px;font-size:11px;font-weight:600;background:white;color:#5c4b49;border:none;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06);">🌸 Flowers</button>
+          <button id="tb-wrap" onclick="switchTab('wrap')" style="flex:1;padding:7px 4px;border-radius:8px;font-size:11px;font-weight:500;color:#8c7774;background:transparent;border:none;cursor:pointer;">🎀 Wrap</button>
+          <button id="tb-note" onclick="switchTab('note')" style="flex:1;padding:7px 4px;border-radius:8px;font-size:11px;font-weight:500;color:#8c7774;background:transparent;border:none;cursor:pointer;">💌 Note</button>
+        </div>
+
+        <!-- Flowers tab -->
+        <div id="tp-flowers" style="flex:1;overflow-y:auto;padding:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <p style="font-size:11px;color:#8c7774;">Tap to add:</p>
+            <span id="stemBadge" style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:#fff0f1;color:#d97b84;">0 stems</span>
+          </div>
+          <div id="flowerGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
+        </div>
+
+        <!-- Wrap tab -->
+        <div id="tp-wrap" style="flex:1;overflow-y:auto;padding:12px;display:none;">
+          <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8c7774;margin-bottom:8px;">Wrapper</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;" id="wrapGrid">
+            <button onclick="setWrapper('kraft')" data-wrap="kraft" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #e58c94;background:#fff9f5;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#e6cbb3;border:1px solid #c6a788;flex-shrink:0;"></span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">Kraft</div></div></button>
+            <button onclick="setWrapper('blush')" data-wrap="blush" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#fadce0;border:1px solid #eab8bf;flex-shrink:0;"></span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">Blush</div></div></button>
+            <button onclick="setWrapper('lavender')" data-wrap="lavender" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#e3e7fa;border:1px solid #bdc4e3;flex-shrink:0;"></span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">Lavender</div></div></button>
+            <button onclick="setWrapper('sage')" data-wrap="sage" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#e2ecd8;border:1px solid #b8cca5;flex-shrink:0;"></span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">Sage</div></div></button>
+            <button onclick="setWrapper('vase')" data-wrap="vase" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#e5f4f9;border:1px solid #b0d5e3;flex-shrink:0;"></span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">Vase</div></div></button>
+            <button onclick="setWrapper('none')" data-wrap="none" class="wrap-btn" style="padding:8px 6px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:left;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:20px;height:20px;border-radius:50%;background:#f0f0f0;border:1px dashed #aaa;flex-shrink:0;font-size:9px;display:flex;align-items:center;justify-content:center;color:#aaa;">✕</span><div><div style="font-size:10px;font-weight:600;color:#5c4b49;">None</div></div></button>
+          </div>
+          <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8c7774;margin-bottom:8px;">Ribbon</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;" id="ribbonGrid">
+            <button onclick="setRibbon('rose')" data-ribbon="rose" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #e58c94;background:#fff9f5;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#f29ca3;border:1px solid #d4747d;margin:0 auto 3px;"></div>Rose</button>
+            <button onclick="setRibbon('cream')" data-ribbon="cream" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#fff7e2;border:1px solid #dfc798;margin:0 auto 3px;"></div>Cream</button>
+            <button onclick="setRibbon('blue')" data-ribbon="blue" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#b9c6f2;border:1px solid #8e9cd0;margin:0 auto 3px;"></div>Blue</button>
+            <button onclick="setRibbon('berry')" data-ribbon="berry" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#d96b78;border:1px solid #b04b57;margin:0 auto 3px;"></div>Berry</button>
+            <button onclick="setRibbon('twine')" data-ribbon="twine" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#c8a986;border:1px solid #9e7e5b;margin:0 auto 3px;"></div>Twine</button>
+            <button onclick="setRibbon('none')" data-ribbon="none" class="ribbon-btn" style="padding:7px 4px;border-radius:10px;border:2px solid #f2e5e2;background:white;text-align:center;cursor:pointer;font-size:10px;font-weight:500;"><div style="width:16px;height:16px;border-radius:50%;background:#f0f0f0;border:1px dashed #aaa;margin:0 auto 3px;font-size:8px;display:flex;align-items:center;justify-content:center;color:#aaa;">✕</div>None</button>
+          </div>
+        </div>
+
+        <!-- Note tab -->
+        <div id="tp-note" style="flex:1;overflow-y:auto;padding:12px;display:none;">
+          <div style="background:#fff9f9;border:1px solid #fad6d9;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#d4747d;">💌 Note</span>
+              <label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="showTag" checked onchange="syncNote()"> Show tag</label>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div><label style="font-size:10px;font-weight:600;color:#8c7774;display:block;margin-bottom:3px;">To</label><input class="inp" type="text" id="noteTo" value="My Love" oninput="syncNote()" maxlength="28" style="font-size:11px;padding:7px 10px;"></div>
+              <div><label style="font-size:10px;font-weight:600;color:#8c7774;display:block;margin-bottom:3px;">From</label><input class="inp" type="text" id="noteFrom" value="Yours Always" oninput="syncNote()" maxlength="28" style="font-size:11px;padding:7px 10px;"></div>
+            </div>
+            <div><label style="font-size:10px;font-weight:600;color:#8c7774;display:block;margin-bottom:3px;">Distance</label><input class="inp" type="text" id="noteDist" value="1,420 miles apart" oninput="syncNote()" maxlength="32" style="font-size:11px;padding:7px 10px;"></div>
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+                <label style="font-size:10px;font-weight:600;color:#8c7774;">Message</label>
+                <button onclick="nextPrompt()" style="font-size:10px;color:#d4747d;background:none;border:none;cursor:pointer;font-family:inherit;">✨ Prompt</button>
+              </div>
+              <textarea id="noteMsg" rows="4" oninput="syncNote()" maxlength="280" class="inp" style="font-size:11px;padding:7px 10px;resize:none;line-height:1.5;">Even though we're miles apart, I picked every single flower in this bouquet thinking of your smile. Counting down the days until I can hold you again! 🌸</textarea>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Canvas -->
+      <section id="stage" class="studio-grid" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 12px;gap:10px;min-height:calc(100vh - 65px);position:relative;overflow:hidden;">
+        <!-- status bar -->
+        <div style="width:100%;max-width:540px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:14px;border:1px solid #f2e5e2;padding:8px 14px;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#8c7774;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#f29ca3;flex-shrink:0;"></span>
+            <span class="builder-tip-long">Tap flower to select · Drag circle to rotate · Drag corner to resize</span><span class="builder-tip-short">Tap a flower, then drag its handles</span>
+          </div>
+          <button onclick="clearCanvas()" style="font-size:11px;color:#b86b6b;background:none;border:none;cursor:pointer;font-family:inherit;">🗑 Clear</button>
+        </div>
+        <!-- SVG -->
+        <div style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;">
+          <div class="canvas-box" style="position:relative;width:100%;max-width:500px;aspect-ratio:5/6;max-height:72vh;">
+            <svg id="mainSvg" viewBox="0 0 600 700" style="width:100%;height:100%;overflow:visible;filter:drop-shadow(0 2px 8px rgba(92,75,73,.08));" aria-label="Your bouquet">
+              <g id="wrapBack"></g>
+              <g id="flowersLayer"></g>
+              <g id="wrapFront" style="pointer-events:none"></g>
+              <g id="ribbonLayer" style="pointer-events:none"></g>
+              <g id="tagLayer" style="cursor:pointer" onclick="switchTab('note')"></g>
+              <g id="gizmoLayer"></g>
+            </svg>
+          </div>
+        </div>
+        <!-- bottom pill -->
+        <div style="background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:1px solid #f2e5e2;border-radius:99px;padding:7px 18px;display:flex;align-items:center;gap:8px;font-size:11px;">
+          <span style="color:#e58c94;">✦</span>
+          <span id="flowerName" style="font-weight:700;color:#5c4b49;">Tap any flower</span>
+          <span style="color:#d5c3c0;">•</span>
+          <span id="flowerMeaning" style="color:#8c7774;font-style:italic;">Drag handles on the flower to tilt & resize</span>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="screen-send" data-screen="send" data-display="flex">
+  <!-- PANEL A: Fill in details -->
+  <div id="send-form-panel" class="send-card">
+    <div style="font-size:48px;margin-bottom:12px;">💌</div>
+    <h2 class="font-serif" style="font-size:24px;font-weight:600;color:#5c4b49;margin-bottom:6px;">Send your bouquet</h2>
+    <p style="font-size:13px;color:#94807d;margin-bottom:24px;line-height:1.6;">Enter their email and hit send. They'll receive a beautiful love letter directly in their inbox.</p>
+    <div style="display:flex;flex-direction:column;gap:12px;text-align:left;margin-bottom:20px;">
+      <div>
+        <label for="recipientEmail" style="font-size:12px;font-weight:600;color:#8c7774;display:block;margin-bottom:5px;">Their email address</label>
+        <input class="inp" type="email" id="recipientEmail" placeholder="their@email.com" autocomplete="email" style="font-size:16px;padding:12px 16px;">
+      </div>
+      <div>
+        <label for="senderName" style="font-size:12px;font-weight:600;color:#8c7774;display:block;margin-bottom:5px;">Your name (shows in the subject and letter)</label>
+        <input class="inp" type="text" id="senderName" placeholder="Your name" maxlength="28" autocomplete="name" style="font-size:16px;padding:12px 16px;">
+      </div>
+    </div>
+    <div style="background:#fff9f9;border:1px solid #fad6d9;border-radius:14px;padding:14px;text-align:left;margin-bottom:20px;">
+      <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#d4747d;margin-bottom:6px;">✉️ Message preview</p>
+      <p class="font-hand" id="msgPreview" style="font-size:18px;color:#5c4b49;line-height:1.5;max-height:80px;overflow:hidden;"></p>
+    </div>
+    <p id="sendWarn" style="display:none;background:#fff6e6;border:1px solid #f5e0b5;color:#9a6b1f;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;text-align:left;margin-bottom:16px;"></p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button onclick="backToBuilder()" class="btn-secondary">← Back</button>
+      <button onclick="sendLetter()" id="sendBtn" class="btn-primary" style="padding:12px 28px;font-size:14px;">Send Love Letter 💌</button>
+    </div>
+
+  </div>
+
+  <!-- PANEL B: Gmail draft opened, letter copied: sender pastes and sends -->
+  <div id="send-confirm-panel" class="send-card" style="display:none;flex-direction:column;align-items:center;">
+
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:24px;width:100%;max-width:320px;">
+      <div style="flex:1;text-align:center;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#7aaa68;color:white;font-size:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">✓</div>
+        <div style="font-size:10px;color:#7aaa68;font-weight:600;">Bouquet built</div>
+      </div>
+      <div style="flex:1;height:2px;background:linear-gradient(to right,#7aaa68,#f29ca3);margin-bottom:18px;"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#f29ca3;color:white;font-size:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">2</div>
+        <div style="font-size:10px;color:#f29ca3;font-weight:600;">Paste &amp; send</div>
+      </div>
+      <div style="flex:1;height:2px;background:#f2e5e2;margin-bottom:18px;"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#f2e5e2;color:#c0a8a8;font-size:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">🌷</div>
+        <div style="font-size:10px;color:#c0a8a8;font-weight:600;">They receive</div>
+      </div>
+    </div>
+
+    <h2 class="font-serif" style="font-size:22px;font-weight:600;color:#5c4b49;margin-bottom:8px;">Almost there!</h2>
+    <p style="font-size:14px;color:#94807d;margin-bottom:16px;line-height:1.7;text-align:center;">
+      A Gmail draft to <strong id="previewRecipient" style="color:#d4747d;"></strong> just opened in a new tab.
+    </p>
+
+    <p id="copyStatus" style="width:100%;font-size:12px;font-weight:600;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;"></p>
+
+    <div style="width:100%;background:linear-gradient(135deg,#fff9f9,#fff4ff);border:2px solid #fad6d9;border-radius:16px;padding:16px 18px;margin-bottom:16px;text-align:left;">
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:#5c4b49;">
+        <div><strong style="color:#d4747d;">1.</strong> Switch to the Gmail tab and click inside the message</div>
+        <div><strong style="color:#d4747d;">2.</strong> Press <strong>Ctrl + A</strong> (<strong>Cmd + A</strong> on Mac) to select the text already there</div>
+        <div><strong style="color:#d4747d;">3.</strong> Press <strong>Ctrl + V</strong> (<strong>Cmd + V</strong>) to paste your letter card over it</div>
+        <div><strong style="color:#d4747d;">4.</strong> Press <strong>Send</strong></div>
+        <div style="font-size:11px;color:#a8908d;margin-top:2px;">Forgot to paste? They still get a plain version with the bouquet link.</div>
+      </div>
+    </div>
+
+    <p id="linkWarn" style="display:none;width:100%;background:#fff6e6;border:1px solid #f5e0b5;color:#9a6b1f;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;text-align:left;margin-bottom:14px;"></p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:10px;">
+      <button onclick="copyLetterAgain()" class="btn-secondary" style="padding:11px;">📋 Copy letter again</button>
+      <button onclick="reopenGmail()" class="btn-secondary" style="padding:11px;">📧 Re-open Gmail</button>
+    </div>
+    <button onclick="previewAsRecipient()" class="btn-secondary" style="width:100%;padding:11px;margin-bottom:14px;">👀 Preview what they'll see</button>
+
+    <div style="display:flex;gap:10px;width:100%;">
+      <button onclick="startFresh()" class="btn-primary" style="flex:1;padding:11px;">🌸 Send another</button>
+      <button onclick="backToBuilder()" class="btn-secondary" style="flex:1;padding:11px;">← Edit bouquet</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"><span style="color:#f29ca3;">✓</span><span id="toastMsg">Done!</span></div>
+
+<script defer src="core/config.js"></script>
+<script defer src="core/state.js"></script>
+<script defer src="core/utils.js"></script>
+<script defer src="core/screens.js"></script>
+<script defer src="bouquet/flowers.js"></script>
+<script defer src="bouquet/defaults.js"></script>
+<script defer src="bouquet/render.js"></script>
+<script defer src="bouquet/link.js"></script>
+<script defer src="features/builder/prompts.js"></script>
+<script defer src="features/builder/builder.js"></script>
+<script defer src="features/send/send.js"></script>
+</body>
+</html>

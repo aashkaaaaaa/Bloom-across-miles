@@ -1,90 +1,106 @@
 # Bloom Across Miles
 
-Build a bouquet, write a love letter, and send it to someone far away. Plain HTML, CSS and JavaScript with no build step.
+Build a bouquet, write a love letter, and send it to someone far away. Plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
+
+## Pages
+
+| Page | What it is |
+|---|---|
+| `index.html` | Home: hero, how it works, Photo Booth teaser |
+| `create.html` | The builder and the send screen |
+| `bouquet.html` | What the recipient opens: envelope, letter, bouquet reveal |
+| `about.html` | About the site |
+| `privacy.html` | What happens to people's data |
+| `404.html` | Shown by GitHub Pages for any address that doesn't exist |
+
+Bouquet links look like `.../bouquet.html#b=...`. Links sent before the site had separate pages (`index.html#b=...` or `#bouquet=...`) are forwarded to `bouquet.html` automatically.
 
 ## Folder structure
 
 ```
-index.html                 Markup for every screen, plus the list of CSS and JS files
-app.js                     Start-up, and resetAll() (the one action that spans features)
-
-core/                      Shared by every feature. Change with care.
-  config.js                APP_URL: where the site is hosted
+core/                      Shared by every page. Change with care.
+  config.js                APP_URL (leave empty unless links must point elsewhere)
   state.js                 S: the bouquet being built or viewed
   utils.js                 esc() and toast()
-  screens.js               showScreen(name): shows one screen, hides the rest
-  base.css                 Reset, fonts, shared buttons, inputs, toast
-  screens.css              Screen containers start hidden
+  screens.js               showScreen(name) for pages with several screens
+  layout.js                Site header and footer (edit nav links here once)
+  base.css                 Reset, buttons, inputs, toast
+  fonts.css                Fonts, served from assets/fonts
+  layout.css               Header, footer, About/Privacy page styles
+  screens.css              Screens start hidden until showScreen() picks one
 
-bouquet/                   Drawing a bouquet and its link. Used by several features.
+bouquet/                   Drawing a bouquet and its link
   flowers.js               Flower library (drawings, names, meanings)
-  render.js                Draws flowers, wrapper, ribbon, gift tag, handles
-  link.js                  Encodes a bouquet into a link and reads it back
+  defaults.js              The starting arrangement
+  render.js                Draws flowers, wrapper, ribbon, tag, handles
+  link.js                  Packs a bouquet into a link and reads it back
 
-features/                  One folder per screen. Features don't edit each other.
-  landing/                 Landing page and hero bouquet
-  builder/                 Bouquet builder, wrap and ribbon tabs, note, starter prompts
+features/                  One folder per feature. Features don't edit each other.
+  landing/                 Home page petals and hero bouquet
+  builder/                 Builder, tabs, note, starter prompts, draft saving
   send/                    Send screen, Gmail draft, copied letter card
   recipient/               Envelope, love letter, bouquet reveal, confetti
+
+assets/
+  favicon.svg, apple-touch-icon.png, og-image.png (link preview)
+  fonts/                   Self-hosted fonts and their licence
 ```
 
-## How the pieces connect
-
-- Every screen in `index.html` is an element with `data-screen="name"` and `data-display="flex"` (or `"block"`). `showScreen('name')` shows that one and hides the rest, so adding a screen never means editing the others.
-- Scripts are listed at the bottom of `index.html` in this order: `core`, `bouquet`, one block per feature, then `app.js`. They share the page's global scope, which is why new features follow the rules below.
+Each page loads only the scripts it needs, listed at the bottom of its HTML. Scripts share the page's global scope, so new features follow the rules below.
 
 ## Adding a new feature (for example, Photo Booth)
 
-Only three places change, and none of them are existing features:
-
 1. **New folder** `features/photobooth/` with `photobooth.css` and `photobooth.js`.
-2. **In `index.html`**:
-   - one screen element:
-     `<div id="screen-photobooth" data-screen="photobooth" data-display="flex"> ... </div>`
-   - one stylesheet line in `<head>`:
-     `<link rel="stylesheet" href="features/photobooth/photobooth.css">`
-   - one script line, before `app.js`:
-     `<script defer src="features/photobooth/photobooth.js"></script>`
-3. **The entry point**: point the landing page's "Notify me" card (or any new button) at `Photobooth.open()`.
+2. **New page** `photobooth.html`: copy `about.html` as a starting point, keep the header/footer placeholders, then add your stylesheet and scripts.
+3. **Link to it**: add `['photobooth.html', 'Photo Booth']` to `NAV` in `core/layout.js`, and swap the "Coming soon" label on the Home page for a link.
 
 ### Rules that keep other features safe
 
-**Wrap the JavaScript in its own scope and expose one name.** Anything declared inside stays private, so it can't overwrite an existing function such as `render` or `toast`.
+**Wrap the JavaScript in its own scope and expose one name.**
 
 ```js
 /* features/photobooth/photobooth.js */
 (function () {
-  const state = { shots: [] };          // its own state; never add to S
-
-  function open() {
-    showScreen('photobooth');           // core helpers are fine to call
-  }
-
-  window.Photobooth = { open };         // the only global it adds
+  const state = { shots: [] };   // its own state; never add to S
+  function start() { /* ... */ }
+  document.addEventListener('DOMContentLoaded', start);
+  window.Photobooth = { start }; // the only global it adds
 })();
 ```
 
-**Prefix every CSS rule with the screen's id**, so its styles only apply inside that screen.
+**Prefix CSS with the feature's own id or class**, e.g. `#photobooth .frame { ... }`.
 
-```css
-#screen-photobooth .frame { ... }
-#screen-photobooth button { ... }
-```
+**Read shared things, don't change them.** Call `toast`, `esc`, `showScreen` or the bouquet drawing functions, but don't edit files in `core/`, `bouquet/` or another feature's folder as part of the feature.
 
-**Read shared things, don't change them.** A feature may call `showScreen`, `toast`, `esc` or the bouquet drawing functions, and read `S`. It shouldn't edit files in `core/`, `bouquet/` or another feature's folder. If it truly needs a shared change, make it a separate, deliberate change.
-
-**If it ever needs to travel in the link**, add a new field to the payload in `bouquet/link.js` and keep reading the existing fields, so links already sent keep opening.
+**If it ever needs to travel in the link**, add a new field in `bouquet/link.js` and keep reading the old ones, so links already sent keep opening.
 
 ## Run locally
 
 Open `index.html` in a browser. Links made this way only work on your own computer.
 
-## Host
+## Publish on GitHub Pages
 
-Drag this whole folder onto https://app.netlify.com/drop while signed in. Links sent from the hosted address open for anyone.
+Upload everything in this folder to the top of the repository (so `index.html` sits at the root), then **Settings > Pages > Deploy from a branch > main / (root) > Save**. Updates: upload changed files and commit; the address stays the same.
+
+## Custom domain
+
+1. Buy a domain from any registrar.
+2. In the repo: **Settings > Pages > Custom domain**, enter it and **Save**. Do this before changing DNS. GitHub adds a `CNAME` file to the repo for you.
+3. At the registrar's DNS settings, remove its default records, then add:
+   - **Apex** (`example.com`): four `A` records for `@` pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - **www**: a `CNAME` record for `www` pointing to `<your-github-username>.github.io`
+4. Wait for DNS (GitHub says up to 24 hours), then tick **Enforce HTTPS**.
+5. GitHub recommends verifying the domain in your account settings to prevent takeover, and avoiding wildcard (`*`) DNS records.
+
+Source: GitHub Docs, "Managing a custom domain for your GitHub Pages site".
+
+After the domain works, change `og:image` in each page's `<head>` from `assets/og-image.png` to the full address, e.g. `https://example.com/assets/og-image.png`.
+
+If you ever host somewhere other than GitHub Pages, update the Hosting section of `privacy.html`.
 
 ## Common changes
 
 - Add a flower: `bouquet/flowers.js`
 - Add a starter message: `features/builder/prompts.js`
 - Change the email card: `buildEmailHTML()` in `features/send/send.js`
+- Change header or footer links: `core/layout.js`

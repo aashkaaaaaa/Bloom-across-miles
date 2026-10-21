@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>A bouquet for you - Bloom Across Miles</title>
+<meta name="description" content="Someone far away sent you a bouquet and a love letter. Open it here.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fdf8f3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bloom Across Miles">
+<meta property="og:title" content="A bouquet for you - Bloom Across Miles">
+<meta property="og:description" content="Someone far away sent you a bouquet and a love letter. Open it here.">
+<meta property="og:image" content="assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="core/fonts.css">
+<link rel="stylesheet" href="core/base.css">
+<link rel="stylesheet" href="core/screens.css">
+<link rel="stylesheet" href="features/send/send.css">
+<link rel="stylesheet" href="features/recipient/recipient.css">
+</head>
+<body>
+<noscript><p style="padding:40px;text-align:center;">Please turn on JavaScript to open your bouquet.</p></noscript>
+
+<div id="screen-recipient" data-screen="recipient" data-display="block">
+  <div id="recipient-bg"></div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Envelope animation -->
+  <div id="envelope-wrap">
+    <div style="text-align:center;margin-bottom:28px;position:relative;z-index:20;">
+      <p style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#d97b84;margin-bottom:6px;">💌 You received something special</p>
+      <h2 class="font-serif" style="font-size:28px;font-weight:600;color:#5c4b49;" id="recipientHeading">A bouquet is waiting for you</h2>
+    </div>
+
+    <!-- The envelope -->
+    <div class="env-container env-bounce" id="envContainer" onclick="openEnvelope()" title="Tap to open" role="button" aria-label="Open the envelope">
+      <!-- Envelope body -->
+      <div class="env-body"></div>
+      <!-- Back flap (always visible behind letter) -->
+      <div class="env-back-flap"></div>
+      <!-- Red heart on the back flap -->
+      <div style="position:absolute;top:28px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;">
+        <svg viewBox="0 0 56 52" width="56" height="52">
+          <path d="M28 46 C28 46 4 30 4 16 C4 9 9 4 16 4 C20 4 24 6 28 11 C32 6 36 4 40 4 C47 4 52 9 52 16 C52 30 28 46 28 46 Z" fill="#c0392b" stroke="#922b21" stroke-width="2"/>
+          <!-- shine lines matching reference image style -->
+          <path d="M16 13 Q20 10 24 13" fill="none" stroke="#e74c3c" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+          <path d="M14 18 Q19 14 25 18" fill="none" stroke="#e74c3c" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+          <path d="M13 23 Q18 18 24 23" fill="none" stroke="#e74c3c" stroke-width="1.4" stroke-linecap="round" opacity=".4"/>
+          <path d="M13 28 Q18 22 24 27" fill="none" stroke="#e74c3c" stroke-width="1.2" stroke-linecap="round" opacity=".3"/>
+        </svg>
+      </div>
+      <!-- Left & right inner triangles -->
+      <div class="env-left"></div>
+      <div class="env-right"></div>
+      <!-- Bottom inner triangle -->
+      <div class="env-bottom"></div>
+      <!-- Letter (starts inside, rises up) -->
+      <div class="letter-card" id="letterCard">
+        <div class="letter-paper">
+          <!-- Wax seal heart -->
+          <div class="letter-wax">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <circle cx="20" cy="20" r="19" fill="#c0392b" stroke="#922b21" stroke-width="1.5"/>
+              <path d="M20 30 C20 30 9 22 9 15 C9 11 12 8 16 8 C18 8 20 10 20 12 C20 10 22 8 24 8 C28 8 31 11 31 15 C31 22 20 30 20 30 Z" fill="#e8f8f5"/>
+              <path d="M14 13 Q16 11 18 13" fill="none" stroke="#922b21" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+              <path d="M13 16 Q17 13 21 16" fill="none" stroke="#922b21" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+              <path d="M12 19 Q16 15 20 18" fill="none" stroke="#922b21" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+            </svg>
+          </div>
+          <div style="height:80px;"></div><!-- space for lines via ::before -->
+        </div>
+      </div>
+      <!-- Front flap (opens) -->
+      <div class="env-front-flap" id="envFlap"></div>
+      <!-- Heart seal on the closed flap -->
+      <div class="env-seal" id="envSeal">
+        <svg viewBox="0 0 56 52" width="56" height="52">
+            <path d="M28 46 C28 46 4 30 4 16 C4 9 9 4 16 4 C20 4 24 6 28 11 C32 6 36 4 40 4 C47 4 52 9 52 16 C52 30 28 46 28 46 Z" fill="#c0392b" stroke="#922b21" stroke-width="2"/>
+            <path d="M16 13 Q20 10 24 13" fill="none" stroke="#e74c3c" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+            <path d="M14 18 Q19 14 25 18" fill="none" stroke="#e74c3c" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+            <path d="M13 23 Q18 18 24 23" fill="none" stroke="#e74c3c" stroke-width="1.4" stroke-linecap="round" opacity=".4"/>
+            <path d="M13 28 Q18 22 24 27" fill="none" stroke="#e74c3c" stroke-width="1.2" stroke-linecap="round" opacity=".3"/>
+          </svg>
+      </div>
+    </div>
+
+    <p id="clickHint" style="margin-top:20px;font-size:13px;color:#b89898;font-style:italic;position:relative;z-index:20;animation:envBounce 2s ease-in-out infinite;">Tap the envelope to open ✨</p>
+  </div>
+
+  <!-- Love Letter Modal - appears after envelope opens -->
+  <div id="letter-modal">
+    <div class="letter-modal-card">
+      <!-- Decorative stamp -->
+      <div style="position:absolute;top:20px;right:20px;width:60px;height:76px;border-radius:8px;border:2px dashed #e5c5c7;background:#fff9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;text-align:center;transform:rotate(3deg);">
+        <span style="font-size:22px;">💌</span>
+        <span style="font-size:8px;font-weight:700;color:#94807d;letter-spacing:.05em;margin-top:2px;">AIR MAIL</span>
+      </div>
+
+      <!-- Distance badge -->
+      <div id="modal-dist-badge" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;background:#fff0f1;border:1px solid #fad6d9;color:#d46a74;font-size:11px;font-weight:600;margin-bottom:20px;">
+        ✈️ <span id="modal-dist"></span>
+      </div>
+
+      <!-- Greeting -->
+      <div class="font-hand" style="font-size:28px;color:#5c4b49;margin-bottom:6px;">
+        Dearest <span id="modal-to" style="color:#d4747d;"></span>,
+      </div>
+
+      <!-- Message on lined paper -->
+      <div class="modal-lines" style="margin-bottom:20px;">
+        <p id="modal-msg" class="font-hand" style="font-size:22px;line-height:2;color:#5c4b49;padding:0 4px;"></p>
+      </div>
+
+      <!-- Sign-off -->
+      <div style="border-top:1px solid #f5ebe9;padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:11px;color:#94807d;">With all my love,</div>
+          <div class="font-hand" id="modal-from" style="font-size:26px;font-weight:700;color:#d4747d;"></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:#94807d;margin-bottom:2px;">Sent with a bouquet</div>
+          <div style="font-size:11px;color:#c0a8a8;">crafted just for you 🌸</div>
+        </div>
+      </div>
+
+      <!-- CTA to view bouquet -->
+      <div style="margin-top:24px;text-align:center;">
+        <p style="font-size:12px;color:#94807d;margin-bottom:14px;">They built you a whole bouquet. Open it to see every flower they chose!</p>
+        <button class="btn-bouquet" id="openBouquetBtn" onclick="openBouquet()">
+          🌷 Open My Bouquet
+        </button>
+      </div>
+
+      <button onclick="closeModal()" aria-label="Close" style="position:absolute;top:14px;left:14px;background:none;border:none;cursor:pointer;font-size:18px;color:#c0a8a8;font-family:inherit;">✕</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-bouquet" data-screen="bouquet" data-display="flex" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px 20px;background:linear-gradient(160deg,#fff0f4 0%,#f4f0ff 60%,#f0fff4 100%);">
+  <canvas id="confetti-canvas2" style="position:fixed;inset:0;pointer-events:none;z-index:10;"></canvas>
+
+  <div style="text-align:center;margin-bottom:24px;position:relative;z-index:20;">
+    <div style="font-size:40px;margin-bottom:8px;">🌷</div>
+    <h2 class="font-serif" style="font-size:26px;font-weight:600;color:#5c4b49;margin-bottom:4px;" id="bouquetRevealTitle">Your bouquet is here!</h2>
+    <p style="font-size:13px;color:#94807d;" id="bouquetRevealSub">Hand-picked with love, just for you</p>
+  </div>
+
+  <!-- Swaying bouquet -->
+  <div style="position:relative;z-index:20;width:100%;max-width:440px;aspect-ratio:5/6;max-height:60vh;animation:gentleSway 5s ease-in-out infinite;transform-origin:bottom center;">
+    <svg id="revealSvg" viewBox="0 0 600 700" style="width:100%;height:100%;overflow:visible;filter:drop-shadow(0 4px 24px rgba(92,75,73,.13));">
+    </svg>
+  </div>
+
+  <!-- Floriography tags -->
+  <div style="position:relative;z-index:20;margin-top:20px;width:100%;max-width:440px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-radius:16px;padding:16px;border:1px solid #f2e5e2;">
+    <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8c7774;margin-bottom:10px;">✦ Flowers chosen for you &amp; their meanings</p>
+    <div id="revealFloriography" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+
+  <!-- Send one back -->
+  <div style="position:relative;z-index:20;margin-top:16px;text-align:center;">
+    <a href="create.html" class="btn-bouquet" style="font-size:13px;padding:12px 24px;">
+      🌸 Create your own bouquet to send back
+    </a>
+    <p style="font-size:11px;color:#b59e9b;margin-top:14px;">Made with <a href="index.html" style="color:#d4747d;font-weight:600;text-decoration:none;">Bloom Across Miles</a> · <a href="privacy.html" style="color:#a8908d;text-decoration:none;">Privacy</a></p>
+  </div>
+</div>
+
+<!-- Shown when the link is empty or damaged -->
+<div id="screen-missing" data-screen="missing" data-display="flex">
+  <div class="send-card" style="max-width:420px;">
+    <div style="font-size:44px;margin-bottom:10px;">🥀</div>
+    <h1 class="font-serif" style="font-size:24px;font-weight:600;color:#5c4b49;margin-bottom:8px;">We couldn't open this bouquet</h1>
+    <p style="font-size:14px;color:#94807d;line-height:1.7;margin-bottom:22px;">The link may be incomplete. Some email apps cut long links short, so try opening it straight from the email, or ask the sender to send it again.</p>
+    <a href="create.html" class="btn-bouquet" style="font-size:14px;padding:13px 26px;">🌷 Make a bouquet</a>
+    <p style="margin-top:16px;"><a href="index.html" style="font-size:12px;color:#a8908d;font-weight:600;">Go to the home page</a></p>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"><span style="color:#f29ca3;">✓</span><span id="toastMsg">Done!</span></div>
+
+<script defer src="core/state.js"></script>
+<script defer src="core/utils.js"></script>
+<script defer src="core/screens.js"></script>
+<script defer src="bouquet/flowers.js"></script>
+<script defer src="bouquet/render.js"></script>
+<script defer src="bouquet/link.js"></script>
+<script defer src="features/recipient/recipient.js"></script>
+<script defer src="features/recipient/confetti.js"></script>
+</body>
+</html>
