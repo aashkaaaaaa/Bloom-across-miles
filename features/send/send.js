@@ -153,7 +153,7 @@ function copyLetterAgain(){ setCopyStatus(null); copyLetter().then(setCopyStatus
 function setCopyStatus(ok){
   const el=document.getElementById('copyStatus');
   if(ok===null){el.textContent='Copying your pink card…';el.style.background='#f7f4f3';el.style.color='#8c7774';return;}
-  el.textContent=ok?'✓ Your pink card is copied':"Couldn't copy the card. Press Copy card again below.";
+  el.textContent=ok?'✓ Your letter card is copied and ready to paste':"Couldn't copy automatically. Press Copy letter again, then paste.";
   el.style.background=ok?'#eef6e9':'#fff0f1';
   el.style.color=ok?'#5d8a4c':'#c25763';
 }
