@@ -1,7 +1,6 @@
 # Bloom Across Miles
 
-Build a bouquet, write a love letter, and send it to someone far away. Plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
-
+Bloom Across Miles is an interactive digital care-package studio designed for long-distance relationships. Users can hand-arrange custom pastel SVG bouquets using direct on-canvas transform controls, draft air-mail love letters, and capture side-by-side "Here & There" webcam photostrips—delivered via an interactive 3D wax-sealed envelope unboxing experience with HTML5 canvas confetti.
 ## Pages
 
 | Page | What it is |
