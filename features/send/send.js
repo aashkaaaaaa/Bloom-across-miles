@@ -5,6 +5,7 @@ function goToSend(){
   const from=(S.note.from||'').trim();
   document.getElementById('senderName').value=(from&&from!=='Yours Always')?from:'';
   showSendPanel('send-form-panel');
+  forgetLastSend();
   prepareLink();
   syncMsgPreview();
   showScreen('send');
@@ -24,6 +25,7 @@ function shareBase(){
 
 /* "Send another": forget this bouquet and open a fresh builder */
 function startFresh(){
+  forgetLastSend();
   if(typeof clearDraft==='function')clearDraft();
   location.href='create.html';
 }
@@ -54,12 +56,12 @@ async function sendLetter(){
   bouquetLink = `${base}#${readyHash()}`;
   const copying = copyLetter();
   prepareGmail();
-  const tab = window.open(_lastGmailUrl, '_blank');
-  document.getElementById('popupBlocked').style.display = tab ? 'none' : 'block';
+  document.getElementById('popupBlocked').style.display = 'none';
   fillConfirm();
   setCopyStatus(null);
   showSendPanel('send-confirm-panel');
   copying.then(setCopyStatus);
+  startGmailCountdown();   // show the paste steps first, then this tab goes to Gmail
 }
 
 /* Short (compressed) link, prepared ahead of the click. If it isn't ready, or this browser can't
@@ -245,3 +247,55 @@ document.addEventListener('DOMContentLoaded',()=>{
     clearTimeout(t); t=setTimeout(prepareLink,250);
   });
 });
+
+/* ── Countdown, then go to Gmail in this same tab ──
+   Moving this tab (instead of opening a new one) can't be blocked as a pop-up, and Back returns here.
+   The card is already on the clipboard, so it survives the move. */
+const GMAIL_COUNTDOWN_SECONDS=6;
+let _countdown=null;
+function startGmailCountdown(){
+  stopGmailCountdown(true);
+  const box=document.getElementById('gmailCountdown'), num=document.getElementById('gmailCountdownNum'), fill=document.getElementById('gmailCountdownFill');
+  if(!box)return;
+  box.hidden=false;
+  document.getElementById('gmailCountdownText').innerHTML=`Opening Gmail in <strong id="gmailCountdownNum">${GMAIL_COUNTDOWN_SECONDS}</strong>…`;
+  const start=Date.now();
+  fill.style.width='0';
+  _countdown=setInterval(()=>{
+    const left=GMAIL_COUNTDOWN_SECONDS-(Date.now()-start)/1000;
+    const n=document.getElementById('gmailCountdownNum'); if(n)n.textContent=Math.max(0,Math.ceil(left));
+    fill.style.width=Math.min(100,100*(1-left/GMAIL_COUNTDOWN_SECONDS))+'%';
+    if(left<=0)goToGmail();
+  },100);
+}
+function stopGmailCountdown(quiet){
+  if(_countdown){clearInterval(_countdown);_countdown=null;}
+  if(quiet)return;
+  const box=document.getElementById('gmailCountdown'); if(box)box.hidden=true;
+}
+function goToGmail(){
+  stopGmailCountdown(true);
+  if(!_lastGmailUrl)return;
+  const box=document.getElementById('gmailCountdown'); if(box)box.hidden=true;
+  // Remember this send for this tab only, so pressing Back from Gmail reopens this screen
+  try{ sessionStorage.setItem(LAST_SEND_KEY, JSON.stringify({email:_lastEmail, link:bouquetLink, gmail:_lastGmailUrl, at:Date.now()})); }catch(e){}
+  location.href=_lastGmailUrl;
+}
+const LAST_SEND_KEY='bam-last-send';
+function forgetLastSend(){ try{ sessionStorage.removeItem(LAST_SEND_KEY); }catch(e){} }
+
+/* Back from Gmail: show the paste screen again (within 30 minutes), without counting down */
+document.addEventListener('DOMContentLoaded',()=>{
+  let last=null;
+  try{ last=JSON.parse(sessionStorage.getItem(LAST_SEND_KEY)||'null'); }catch(e){}
+  if(!last || Date.now()-last.at>30*60*1000 || !last.link){ forgetLastSend(); return; }
+  _lastEmail=last.email; bouquetLink=last.link; _lastGmailUrl=last.gmail;
+  fillConfirm();
+  const box=document.getElementById('gmailCountdown'); if(box)box.hidden=true;
+  const st=document.getElementById('copyStatus');
+  st.textContent='Back from Gmail? If the card didn\'t paste, press Copy letter again.';
+  st.style.background='#f7f4f3'; st.style.color='#8c7774';
+  showScreen('send'); showSendPanel('send-confirm-panel');
+});
+/* Coming Back from Gmail restores this screen; don't count down again */
+window.addEventListener('pageshow',e=>{ if(e.persisted){ stopGmailCountdown(); } });

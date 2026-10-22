@@ -17,3 +17,11 @@
 .paste-steps li{font-size:13px;color:#5c4b49;line-height:1.55;}
 .paste-steps-note{font-size:11px;color:#a8908d;margin-top:8px;}
 .pretty-card #cardPreview{margin-bottom:10px;}
+
+/* Countdown before the tab goes to Gmail */
+.gmail-countdown{width:100%;background:#f4f9f1;border:1.5px solid #d7e8cc;border-radius:14px;padding:12px 14px;margin-bottom:14px;text-align:center;}
+.gmail-countdown p{font-size:13px;font-weight:600;color:#5d8a4c;margin-bottom:8px;}
+.gmail-countdown-bar{height:6px;border-radius:99px;background:#e3efdb;overflow:hidden;margin-bottom:10px;}
+.gmail-countdown-bar span{display:block;height:100%;width:0;background:#7aaa68;border-radius:99px;}
+.gmail-countdown-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.gmail-countdown[hidden]{display:none;}

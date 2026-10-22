@@ -208,9 +208,18 @@
 
     <h2 class="font-serif" style="font-size:22px;font-weight:600;color:#5c4b49;margin-bottom:8px;">Almost there!</h2>
     <p style="font-size:14px;color:#94807d;margin-bottom:16px;line-height:1.7;text-align:center;">
-      A Gmail draft to <strong id="previewRecipient" style="color:#d4747d;"></strong> just opened in a new tab.
+      Your letter to <strong id="previewRecipient" style="color:#d4747d;"></strong> is ready. Gmail opens next with her address and the subject filled in.
     </p>
-    <p id="popupBlocked" style="display:none;width:100%;background:#fff0f1;border:1px solid #fad6d9;color:#c25763;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;margin-bottom:14px;">Your browser blocked the Gmail tab. Press <strong>Re-open Gmail</strong> below.</p>
+    <!-- Countdown, then this tab goes to Gmail (features/send/send.js: startGmailCountdown) -->
+    <div id="gmailCountdown" class="gmail-countdown">
+      <p id="gmailCountdownText">Opening Gmail in <strong id="gmailCountdownNum">6</strong>…</p>
+      <div class="gmail-countdown-bar"><span id="gmailCountdownFill"></span></div>
+      <div class="gmail-countdown-actions">
+        <button type="button" onclick="goToGmail()" class="btn-primary" style="padding:10px 18px;font-size:13px;">📧 Open Gmail now</button>
+        <button type="button" onclick="stopGmailCountdown()" class="btn-secondary" style="padding:9px 16px;">Stay here</button>
+      </div>
+    </div>
+    <p id="popupBlocked" style="display:none;width:100%;background:#fff0f1;border:1px solid #fad6d9;color:#c25763;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;margin-bottom:14px;">Your browser blocked the Gmail tab. Press <strong>Open Gmail</strong> below.</p>
     <p id="linkWarn" style="display:none;width:100%;background:#fff6e6;border:1px solid #f5e0b5;color:#9a6b1f;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;text-align:left;margin-bottom:14px;"></p>
 
     <p id="copyStatus" style="width:100%;font-size:12px;font-weight:600;border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;"></p>
@@ -218,7 +227,7 @@
     <div class="paste-steps">
       <p class="paste-steps-title">Paste &amp; send</p>
       <ol>
-        <li>Switch to the Gmail tab and click inside the message area.</li>
+        <li>When Gmail opens, click inside the message area.</li>
         <li>Press <kbd class="mod">Ctrl</kbd> + <kbd>V</kbd> to paste your pink letter card.</li>
         <li>Press <strong>Send</strong>.</li>
       </ol>
@@ -232,13 +241,13 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:10px;">
       <button onclick="copyLetterAgain()" class="btn-secondary" style="padding:11px;">📋 Copy letter again</button>
-      <button onclick="reopenGmail()" class="btn-secondary" style="padding:11px;">📧 Re-open Gmail</button>
+      <button onclick="reopenGmail()" class="btn-secondary" style="padding:11px;">📧 Open Gmail</button>
     </div>
     <button onclick="previewAsRecipient()" class="btn-secondary" style="width:100%;padding:11px;margin-bottom:14px;">👀 Preview what she'll see</button>
 
     <div style="display:flex;gap:10px;width:100%;">
       <button onclick="startFresh()" class="btn-primary" style="flex:1;padding:11px;">🌸 Send another</button>
-      <button onclick="backToBuilder()" class="btn-secondary" style="flex:1;padding:11px;">← Edit bouquet</button>
+      <button onclick="forgetLastSend();stopGmailCountdown();backToBuilder()" class="btn-secondary" style="flex:1;padding:11px;">← Edit bouquet</button>
     </div>
   </div>
 </div>
